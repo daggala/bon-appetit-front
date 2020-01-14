@@ -38,11 +38,14 @@ class Login extends React.Component {
     super(props);
     this.state = {
       email: "",
-      password: ""
+      password: "",
+      error : ""
     };
     this.editEmail = this.editEmail.bind(this);
     this.editPassword = this.editPassword.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.onSuccess = this.onSuccess.bind(this);
+
   }
   editEmail(event) {
     this.setState({ email: event.target.value });
@@ -51,9 +54,13 @@ class Login extends React.Component {
     this.setState({ password: event.target.value });
   }
 
+  onSuccess(response){
+    console.log('response in component ' , response);
+  }
+
   handleSubmit(event) {
     event.preventDefault();
-    this.props.login(this.state.email, this.state.password);
+   this.props.login(this.state.email, this.state.password, this.onSuccess);
   }
 
   render() {
@@ -78,6 +85,7 @@ class Login extends React.Component {
           </label>
           <input type="submit" value="Submit" />
         </form>
+        {this.state.error ? <p>Not a valid username or password</p> : null}
       </Container>
     );
   }

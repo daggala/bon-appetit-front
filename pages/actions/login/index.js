@@ -1,7 +1,6 @@
-const login = (email, password) => {
+const login = (email, password, onSuccess) => {
   console.log("email ", email);
   console.log("password ", password);
-
   const headers = {
     "Content-Type": "application/json"
   };
@@ -14,7 +13,7 @@ const login = (email, password) => {
     password: password,
     token: token
   };
-  fetch("http://localhost:3003/auth", {
+  const resp =  fetch("http://localhost:3003/auth", {
     method: "POST", // *GET, POST, PUT, DELETE, etc.
     mode: "cors", // no-cors, cors, *same-origin
     body: JSON.stringify(data),
@@ -27,10 +26,15 @@ const login = (email, password) => {
       console.log("response ", response);
       sessionStorage.setItem("token", response.token);
       sessionStorage.setItem("user", JSON.stringify(response.user));
+      onSuccess(response);
     })
     .catch(error => {
       console.log(error);
+      return error;
     });
+
+    console.log('resp ', resp);
+  
 };
 
 export default login;
