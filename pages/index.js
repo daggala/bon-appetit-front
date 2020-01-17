@@ -1,19 +1,23 @@
-import React from "react";
-import Head from "next/head";
-import Nav from "../components/nav";
-import Login from "./components/login.js";
-import login from "./actions/login";
+import React, { useContext } from "react";
 import fetch from "isomorphic-unfetch";
-import Banner from "./components/banner";
-import Recipes from "./components/recipes";
-// import "typeface-roboto";
+import Recipes from "../components/recipes";
+import Link from "next/link";
+import { logout } from "../actions/login";
+import { UserContext } from "../utils/context";
 
 const Home = props => {
+  const { logoutUser } = useContext(UserContext);
   return (
-    <div>
-      <Banner />
+    <>
+      <Link href="/login">
+        <p>Login</p>
+      </Link>
+      <Link href="/register">
+        <p>Register</p>
+      </Link>
+      <div onClick={logoutUser}>Logout </div>
       <Recipes recipes={props.recipes} />
-    </div>
+    </>
   );
 };
 

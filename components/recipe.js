@@ -66,7 +66,7 @@ export default function Recipe({ recipe }) {
       />
       <CardMedia
         className={classes.media}
-        image={`https://spoonacular.com/recipeImages/${recipe.id}-90x90.jpg`}
+        image={`https://spoonacular.com/recipeImages/${recipe.id}-480x360.jpg`}
         title="Paella dish"
       />
       <CardContent>
