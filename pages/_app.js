@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { UserContext } from "../utils/context.js";
 import Banner from "../components/banner";
+import { login } from "../actions/login";
 import { isJsonString } from "../utils/isJsonString";
+import Router from "next/router";
 
 function MyApp({ Component, pageProps }) {
   const [user, setUser] = useState(null);
@@ -16,11 +18,15 @@ function MyApp({ Component, pageProps }) {
     sessionStorage.setItem("token", null);
     sessionStorage.setItem("user", null);
     setUser(null);
+    Router.push("/");
   };
 
-  const loginUser = () => {
-    const sessionUser = sessionStorage.getItem("user");
-    setUser(JSON.parse(sessionUser));
+  const loginUser = formValues => {
+    return login(formValues).then(resp => {
+      const sessionUser = sessionStorage.getItem("user");
+      setUser(JSON.parse(sessionUser));
+      return resp;
+    });
   };
 
   return (

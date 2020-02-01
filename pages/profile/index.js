@@ -1,11 +1,14 @@
-import React from "react";
-import Banner from "../../components/banner";
+import React, { useContext } from "react";
+import { UserContext } from "../../utils/context";
 
 const Profile = () => {
+  const { logoutUser } = useContext(UserContext);
+
   return (
     <>
-      <Banner />
       <div>Profile</div>
+
+      <button onClick={logoutUser}>Logout</button>
     </>
   );
 };

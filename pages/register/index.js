@@ -43,17 +43,15 @@ const Register = () => {
   };
 
   return (
-    <Layout>
-      <form className={classes.root} onSubmit={onSubmit}>
-        <Input placeholder="First Name" />
-        <Input placeholder="Last Name" />
-        <Input placeholder="E-mail" />
-        <Input placeholder="Password" type="password" />
-        <Button variant="contained" size="small" color="primary" type="submit">
-          Register
-        </Button>
-      </form>
-    </Layout>
+    <form className={classes.root} onSubmit={onSubmit}>
+      <Input placeholder="First Name" />
+      <Input placeholder="Last Name" />
+      <Input placeholder="E-mail" />
+      <Input placeholder="Password" type="password" />
+      <Button variant="contained" size="small" color="primary" type="submit">
+        Register
+      </Button>
+    </form>
   );
 };
 
