@@ -20,7 +20,6 @@
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
     "styled-components": "^4.4.1",
-    "typeface-roboto": "0.0.75",
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10"
   },

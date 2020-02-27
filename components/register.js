@@ -1,12 +1,51 @@
-import React, { useReducer, useState, useContext } from "react";
-import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
+import React, { useReducer, useState, useContext } from 'react';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import isValidEmail from '../utils/isValidEmail';
 
 const Register = ({ onClickOutside }) => {
+  function reducer(state, action) {
+    switch (action.type) {
+      case 'firstName':
+        return { ...state, firstName: action.payload };
+      case 'lastName':
+        return { ...state, lastName: action.payload };
+      case 'email':
+        return { ...state, email: action.payload };
+      case 'firstPassword':
+        return { ...state, firstPassword: action.payload };
+      case 'secondPassword':
+        return { ...state, secondPassword: action.payload };
+      case 'error':
+        return { ...state, error: action.payload, emailError: null };
+      case 'emailError':
+        return { ...state, emailError: action.payload, error: null };
+      case 'lastNameError':
+        return { ...state, lastNameError: action.payload, error: null };
+      case 'firstNameError':
+        return { ...state, firstNameError: action.payload, error: null };
+      default:
+        throw new Error();
+    }
+  }
+
+  const initialValues = {
+    email: null,
+    firstPassword: null,
+    secondPassword: null,
+    error: null,
+    emailError: null,
+    lastNameError: null,
+    firstNameError: null,
+    firstName: null,
+    lastName: null
+  };
+  const [formValues, dispatch] = useReducer(reducer, initialValues);
+
   const [open, setOpen] = React.useState(true);
 
   const handleClose = () => {
@@ -14,29 +53,60 @@ const Register = ({ onClickOutside }) => {
     onClickOutside(false);
   };
   const onSubmit = event => {
+    if (formValues.firstPassword !== formValues.secondPassword) {
+      dispatch({
+        type: 'error',
+        payload: 'The passwords are not the same, try again'
+      });
+      return;
+    } else if (!isValidEmail(formValues.email)) {
+      dispatch({ type: 'emailError', payload: 'Email not valid' });
+      return;
+    } else if (!formValues.firstName) {
+      dispatch({ type: 'firstNameError', payload: 'First name missing' });
+      return;
+    } else if (!formValues.lastName) {
+      dispatch({ type: 'lastNameError', payload: 'Last name missing' });
+      return;
+    }
     event.preventDefault();
 
     const data = {
-      firstName: "Dagnyyy",
-      lastName: "Gudmunds",
-      email: "dagga@dagga.is",
-      password: "123"
-    };
-    const headers = {
-      "Content-Type": "application/json"
+      firstName: formValues.firstName,
+      lastName: formValues.lastName,
+      email: formValues.email,
+      password: formValues.firstPassword
     };
 
-    fetch("http://localhost:3003/user", {
-      method: "POST", // *GET, POST, PUT, DELETE, etc.
-      mode: "cors", // no-cors, cors, *same-origin
+    const headers = {
+      'Content-Type': 'application/json'
+    };
+
+    function handleErrors(response) {
+      if (!response.success) {
+        throw new Error(response.msg);
+      }
+      return response;
+    }
+
+    fetch('http://localhost:3003/user', {
+      method: 'POST', // *GET, POST, PUT, DELETE, etc.
+      mode: 'cors', // no-cors, cors, *same-origin
       body: JSON.stringify(data),
       headers: headers
     })
-      .then(function(response) {
-        return response.json();
+      .then(response => response)
+      .then(response => response.json())
+      .then(resp => {
+        if (!resp.success) {
+          throw new Error(resp.msg);
+        }
       })
-      .then(data => {
-        return setHits(data);
+      .then(() => {
+        handleClose();
+      })
+      .catch(error => {
+        dispatch({ type: 'error', payload: error.message });
       });
   };
 
@@ -49,7 +119,39 @@ const Register = ({ onClickOutside }) => {
       >
         <DialogTitle id="form-dialog-title">Register</DialogTitle>
         <DialogContent>
+          <p style={{ color: 'red' }}>{formValues.error}</p>
+
           <form onSubmit={onSubmit}>
+            <TextField
+              autoFocus
+              margin="dense"
+              label="First Name"
+              fullWidth
+              required
+              error={formValues.firstNameError ? true : false}
+              helperText={formValues.firstNameError}
+              onChange={e =>
+                dispatch({
+                  type: 'firstName',
+                  payload: e.target.value
+                })
+              }
+            />
+            <TextField
+              autoFocus
+              margin="dense"
+              label="Last Name"
+              fullWidth
+              required
+              error={formValues.lastNameError ? true : false}
+              helperText={formValues.lastNameError}
+              onChange={e =>
+                dispatch({
+                  type: 'lastName',
+                  payload: e.target.value
+                })
+              }
+            />
             <TextField
               autoFocus
               margin="dense"
@@ -58,6 +160,14 @@ const Register = ({ onClickOutside }) => {
               type="email"
               fullWidth
               required
+              error={formValues.emailError}
+              helperText={formValues.emailError}
+              onChange={event => {
+                dispatch({
+                  type: 'email',
+                  payload: event.target.value
+                });
+              }}
             />
             <TextField
               autoFocus
@@ -67,6 +177,9 @@ const Register = ({ onClickOutside }) => {
               type="password"
               fullWidth
               required
+              onChange={e =>
+                dispatch({ type: 'firstPassword', payload: e.target.value })
+              }
             />
             <TextField
               autoFocus
@@ -78,7 +191,7 @@ const Register = ({ onClickOutside }) => {
               required
               onChange={event => {
                 dispatch({
-                  type: "password",
+                  type: 'secondPassword',
                   payload: event.target.value
                 });
               }}
@@ -89,13 +202,7 @@ const Register = ({ onClickOutside }) => {
           <Button onClick={handleClose} color="primary">
             Cancel
           </Button>
-          <Button
-            onClick={e => {
-              handleClose();
-              handleSubmit(e);
-            }}
-            color="primary"
-          >
+          <Button onClick={onSubmit} color="primary">
             Register
           </Button>
         </DialogActions>

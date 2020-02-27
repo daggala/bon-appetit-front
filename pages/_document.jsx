@@ -1,7 +1,7 @@
-import React from "react";
-import Document, { Html, Head, Main, NextScript } from "next/document";
-import { ServerStyleSheets } from "@material-ui/styles";
-import { createMuiTheme, responsiveFontSizes } from "@material-ui/core/styles";
+import React from 'react';
+import Document, { Html, Head, Main, NextScript } from 'next/document';
+import { ServerStyleSheets } from '@material-ui/styles';
+import { createMuiTheme, responsiveFontSizes } from '@material-ui/core/styles';
 
 const theme = responsiveFontSizes(createMuiTheme());
 
@@ -33,7 +33,7 @@ class MyDocument extends Document {
                 box-sizing: border-box;
               }
               body {
-                font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+                font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
                 font-size: 1rem;
                 margin: 0;
               }
