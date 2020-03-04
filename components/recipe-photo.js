@@ -18,35 +18,39 @@ const Label = styled.label`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: #b2d8d8;
+  background-color: ${props => (props.error ? 'red' : '#b2d8d8')};
   cursor: pointer;
   &:hover {
     background-color: #a8cccc;
   }
 `;
 
-const RecipePhoto = ({ image, uploadImage }) => {
+const RecipePhoto = React.forwardRef((props, ref) => {
   return (
     <>
-      {image ? (
+      {props.image ? (
         <label htmlFor="file-upload">
-          <PreviewImage src={image} />
+          <PreviewImage src={props.image} />
         </label>
       ) : (
-        <Label htmlFor="file-upload">
-          Click here to upload a photo
+        <Label htmlFor="file-upload" error={props.error}>
+          {props.error
+            ? 'Please provide photo!'
+            : 'Click here to upload a photo'}
           <CameraAltIcon style={{ fontSize: 90, color: '#006666' }} />
         </Label>
       )}
 
       <ImageInput
+        ref={ref}
         id="file-upload"
         type="file"
         name="file"
-        onChange={uploadImage}
+        defaultValue=""
+        onChange={props.uploadImage}
       />
     </>
   );
-};
+});
 
 export default RecipePhoto;

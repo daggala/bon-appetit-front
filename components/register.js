@@ -98,6 +98,7 @@ const Register = ({ onClickOutside }) => {
       .then(response => response)
       .then(response => response.json())
       .then(resp => {
+        console.log('resp ', resp);
         if (!resp.success) {
           throw new Error(resp.msg);
         }

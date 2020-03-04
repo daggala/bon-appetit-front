@@ -1,15 +1,17 @@
-export const createRecipe = (recipe, file) => {
+export const createRecipe = recipe => {
   const headers = {};
 
   const token = sessionStorage.getItem('token');
   if (token) {
     headers.Authorization = `Bearer ${token}`;
   }
+  console.log('recipe in action ', recipe);
 
   const data = new FormData();
   data.append('title', recipe.title);
-  data.append('ingredients', JSON.stringify(recipe.ingredients));
-  data.append('file', file);
+  data.append('url', recipe.link);
+  // data.append('ingredients', JSON.stringify(recipe.ingredients));
+  data.append('file', recipe.file[0]);
 
   function handleErrors(response) {
     if (!response.ok) {
@@ -30,7 +32,7 @@ export const createRecipe = (recipe, file) => {
     .then(function(resp) {
       return handleErrors(resp);
     })
-    .then(response => {
-      return response;
+    .then(resp => {
+      return resp;
     });
 };

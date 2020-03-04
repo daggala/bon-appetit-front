@@ -3,11 +3,11 @@ import Recipe from './recipe';
 import styled from 'styled-components';
 
 const Container = styled.div`
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  margin: 0px 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-gap: 20px;
+  justify-items: center;
+  margin: 10px 20px;
 `;
 
 const Recipes = ({ recipes }) => {
