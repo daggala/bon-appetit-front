@@ -5,7 +5,6 @@ export const createRecipe = recipe => {
   if (token) {
     headers.Authorization = `Bearer ${token}`;
   }
-  console.log('recipe in action ', recipe);
 
   const data = new FormData();
   data.append('title', recipe.title);

@@ -1,5 +1,5 @@
-import React, { useContext } from 'react';
-import { fade, makeStyles, withStyles } from '@material-ui/core/styles';
+import React, { useState, useEffect, useContext, useLayoutEffect } from 'react';
+import { fade, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -8,13 +8,13 @@ import InputBase from '@material-ui/core/InputBase';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import MenuIcon from '@material-ui/icons/Menu';
-import Button from '@material-ui/core/Button';
 import SearchIcon from '@material-ui/icons/Search';
 import Link from 'next/link';
 import { UserContext } from '../utils/context';
 import Login from './login.js';
 import Register from './register.js';
 import ColorButton from './buttons/colorButton';
+import { isJsonString } from '../utils/isJsonString';
 
 const useStyles = makeStyles(theme => ({
   grow: {
@@ -73,8 +73,9 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function PrimarySearchAppBar() {
+const Banner = () => {
   const classes = useStyles();
+
   const { user } = useContext(UserContext);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -151,7 +152,7 @@ export default function PrimarySearchAppBar() {
           ) : null}
 
           <div className={classes.grow} />
-          {!user ? (
+          {user ? null : (
             <div style={{ display: 'flex', marginRight: '20px' }}>
               <div style={{ marginRight: '10px' }}>
                 <ColorButton
@@ -170,7 +171,7 @@ export default function PrimarySearchAppBar() {
                 Register
               </ColorButton>
             </div>
-          ) : null}
+          )}
           <IconButton
             edge="start"
             className={classes.menuButton}
@@ -187,4 +188,6 @@ export default function PrimarySearchAppBar() {
       {renderMenu}
     </div>
   );
-}
+};
+
+export default Banner;

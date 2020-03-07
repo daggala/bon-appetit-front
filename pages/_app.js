@@ -11,7 +11,7 @@ import {
 } from '@material-ui/core/styles';
 
 function MyApp({ Component, pageProps }) {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState({});
 
   const theme = {
     colors: ['#b2d8d8', '#66b2b2', '#008080', '#006666', '#004c4c', '#003c3c']
