@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import fetch from 'isomorphic-unfetch';
 import Recipes from '../components/recipes';
+import Demo from '../components/demo';
+
 
 async function loadRecipes(offset) {
-  console.log('offset ', offset);
   const headers = {
     'Content-Type': 'application/json'
   };
@@ -11,9 +12,8 @@ async function loadRecipes(offset) {
     offset: 0,
     limit: 6
   };
-  return fetch('http://localhost:3003/recipe/getChunk', {
-    method: 'POST',
-    body: JSON.stringify(data),
+  return fetch(`http://localhost:3003/recipe/recipe?offset=${0}`, {
+    method: 'GET',
     headers: headers
   })
     .then(resp => {
@@ -38,6 +38,7 @@ const Home = () => {
   }, []);
 
   return <Recipes recipes={recipes} loadMore={loadRecipes} />;
+  //return <Demo />
 };
 
 export default Home;
