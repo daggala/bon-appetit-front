@@ -51,7 +51,7 @@ const Recipe = ({ recipe }) => {
 };
 
 Recipe.getInitialProps = async function({ query }) {
-  const res = await fetch(`http://localhost:3003/recipe/recipe?id=${query.id}`);
+  const res = await fetch(`http://localhost:3003/recipe/baba/recipe?id=${query.id}`);
   const data = await res.json();
   return {
     recipe: data

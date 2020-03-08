@@ -4,8 +4,7 @@ import { usePaginatedFetch } from "../actions/usePaginatedFetch";
 
 const Demo = () => {
   const [{ data, isFetching }, fetchItems] = usePaginatedFetch();
-  // Create the ref
-  console.log("data.items ", data.items.length);
+
   const scrollContainerRef = createRef();
 
   const renderMasonryItem = ({ data }) => {
@@ -14,9 +13,9 @@ const Demo = () => {
       <Mask shape="rounded">
         <Image
           alt="Test"
-          // color={data.color}
           naturalHeight={1656}
           naturalWidth={2500}
+          
           src={data.imageUrl}
         />
       </Mask>

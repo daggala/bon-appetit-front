@@ -1,42 +1,49 @@
 import React, { useState, createRef } from 'react';
 import styled from 'styled-components';
 import Card from './card.js';
-import { Box, Mask, Image, Link, Masonry, Spinner, Text } from "gestalt";
+import { Box, Mask, Image, Masonry, Spinner, Text } from "gestalt";
 import { usePaginatedFetch } from '../actions/usePaginatedFetch';
+import Link from 'next/link';
 
 const Container = styled.div`
   overflow: scroll;
-  height: 500px;
+  height: 100vh;
   margin-top: 30px;
 `;
 
 const Recipes = ({ recipes, loadMore }) => {
   const [{ data, isFetching }, fetchItems] = usePaginatedFetch();
 
-  console.log('data ', data)
   const domValue = createRef();
 
   const renderMasonryItem = ({ data }) => {
     return(
-    <Box>
+   
+    <Box style={{cursor: 'pointer'}}>
       <Mask shape="rounded">
         <Image
           alt="Test"
-          // color={data.color}
           naturalHeight={1656}
           naturalWidth={2500}
           src={data.imageUrl}
         />
       </Mask>
-      <Text size="sm">{data.author}</Text>
-    </Box>)
+      <Link
+      href={{ pathname: '/recipe/[id]', query: data.id }}
+      as={`/recipe/${data.id}`}
+    >
+      <p size="sm">{data.title}</p>
+      </Link>
+    </Box>
+  
+    )
 }
 
 
   return (
     <Container ref={domValue}>
       <Masonry
-        comp={renderMasonryItem}
+        comp={Card}
         items={data.items}
         scrollContainer={() => domValue.current}
         loadItems={fetchItems}
