@@ -15,6 +15,11 @@ import Login from './login.js';
 import Register from './register.js';
 import ColorButton from './buttons/colorButton';
 import { isJsonString } from '../utils/isJsonString';
+import styled from 'styled-components';
+
+const HomeLink = styled.div`
+  cursor: pointer;
+`;
 
 const useStyles = makeStyles(theme => ({
   grow: {
@@ -103,21 +108,21 @@ const Banner = () => {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
+         <Link href="/profile">
       <MenuItem onClick={handleMenuClose}>
-        <Link href="/profile">
           <p>Profile</p>
-        </Link>
       </MenuItem>
+      </Link>
+      <Link href="/create-recipe">
       <MenuItem onClick={handleMenuClose}>
-        <Link href="/create-recipe">
-          <p>Create my own recipe</p>
-        </Link>
+          <p>Create my own recipe</p>  
       </MenuItem>
+      </Link>
+      <Link href="/pin-recipe">
       <MenuItem onClick={handleMenuClose}>
-        <Link href="/pin-recipe">
           <p>Pin a recipe</p>
-        </Link>
       </MenuItem>
+      </Link>
     </Menu>
   );
 
@@ -125,11 +130,13 @@ const Banner = () => {
     <div className={classes.grow}>
       <AppBar position="static">
         <Toolbar>
+          <HomeLink>
           <Typography className={classes.title} variant="h6" noWrap>
             <Link href="/">
               <p>Bon Appetit</p>
             </Link>
           </Typography>
+          </HomeLink>
           <div className={classes.search}>
             <div className={classes.searchIcon}>
               <SearchIcon />
