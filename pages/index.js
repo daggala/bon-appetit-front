@@ -1,14 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import fetch from 'isomorphic-unfetch';
+import React  from 'react';
 import Recipes from '../components/recipes';
-import Demo from '../components/demo';
-
-
 
 const Home = () => {
 
-  return <Recipes  />;
-  //return <Demo />
+return <Recipes  />;
 };
 
 export default Home;
