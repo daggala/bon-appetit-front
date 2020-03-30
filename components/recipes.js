@@ -1,13 +1,13 @@
-import React, { createRef } from 'react';
-import styled from 'styled-components';
-import Card from './card.js';
-import {  Masonry  } from "gestalt";
-import { usePaginatedFetch } from '../actions/usePaginatedFetch';
+import React, { createRef } from "react";
+import styled from "styled-components";
+import Card from "./card.js";
+import { Masonry } from "gestalt";
+import { usePaginatedFetch } from "../actions/usePaginatedFetch";
 
 const Container = styled.div`
   overflow: scroll;
   height: 100vh;
-  margin-top: 30px;
+  margin: 0px 15px 30px 15px;
 `;
 
 const Recipes = () => {
