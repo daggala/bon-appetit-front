@@ -1,16 +1,20 @@
-export const createRecipe = recipe => {
+export const createRecipe = (recipe, ingredients, image) => {
   const headers = {};
 
-  const token = sessionStorage.getItem('token');
+  const token = sessionStorage.getItem("token");
   if (token) {
     headers.Authorization = `Bearer ${token}`;
   }
 
   const data = new FormData();
-  data.append('title', recipe.title);
-  data.append('url', recipe.link);
-  // data.append('ingredients', JSON.stringify(recipe.ingredients));
-  data.append('file', recipe.file[0]);
+  data.append("title", recipe.title);
+  recipe.servings ? data.append("servings", recipe.servings) : null;
+  data.append("minutes", recipe.time);
+  data.append("instructions", recipe.instructions);
+  recipe.link ? data.append("url", recipe.link) : null;
+  ingredients ? data.append("ingredients", JSON.stringify(ingredients)) : null;
+  recipe.instructions ? data.append("description", recipe.instructions) : null;
+  image ? data.append("file", image) : null;
 
   function handleErrors(response) {
     if (!response.ok) {
@@ -19,9 +23,9 @@ export const createRecipe = recipe => {
     return response;
   }
 
-  return fetch('http://localhost:3003/recipe', {
-    method: 'POST', // *GET, POST, PUT, DELETE, etc.
-    mode: 'cors', // no-cors, cors, *same-origin
+  return fetch("http://localhost:3003/recipe", {
+    method: "POST", // *GET, POST, PUT, DELETE, etc.
+    mode: "cors", // no-cors, cors, *same-origin
     body: data,
     headers: headers
   })
@@ -32,6 +36,7 @@ export const createRecipe = recipe => {
       return handleErrors(resp);
     })
     .then(resp => {
+      console.log("resp ", resp);
       return resp;
     });
 };

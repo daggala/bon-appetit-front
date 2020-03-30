@@ -1,16 +1,15 @@
-import React from 'react';
-import styled from 'styled-components';
-import CameraAltIcon from '@material-ui/icons/CameraAlt';
+import React from "react";
+import styled from "styled-components";
+import CameraAltIcon from "@material-ui/icons/CameraAlt";
 
 const ImageInput = styled.input`
   display: none;
 `;
 
 const PreviewImage = styled.img`
-  max-width: 400px;
-  max-height: 300px;
-  width: 100%;
+  // width: 100%;
   object-fit: cover;
+  height: 300px;
 `;
 
 const Label = styled.label`
@@ -18,11 +17,12 @@ const Label = styled.label`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: ${props => (props.error ? 'red' : '#b2d8d8')};
+  background-color: ${props => (props.error ? "red" : "#b2d8d8")};
   cursor: pointer;
   &:hover {
     background-color: #a8cccc;
   }
+  height: 300px;
 `;
 
 const RecipePhoto = React.forwardRef((props, ref) => {
@@ -35,9 +35,9 @@ const RecipePhoto = React.forwardRef((props, ref) => {
       ) : (
         <Label htmlFor="file-upload" error={props.error}>
           {props.error
-            ? 'Please provide photo!'
-            : 'Click here to upload a photo'}
-          <CameraAltIcon style={{ fontSize: 90, color: '#006666' }} />
+            ? "Please provide photo!"
+            : "Click here to upload a photo"}
+          <CameraAltIcon style={{ fontSize: 90, color: "#006666" }} />
         </Label>
       )}
 

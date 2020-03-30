@@ -1,11 +1,11 @@
-import React, { useContext, useState, useReducer } from 'react';
-import { UserContext } from '../../utils/context';
-import styled, { withTheme } from 'styled-components';
-import TextField from '@material-ui/core/TextField';
-import RecipePhoto from '../../components/recipe-photo';
-import Button from '@material-ui/core/Button';
-import { makeStyles } from '@material-ui/core/styles';
-import SaveIcon from '@material-ui/icons/Save';
+import React, { useContext, useState, useReducer } from "react";
+import { UserContext } from "../../utils/context";
+import styled, { withTheme } from "styled-components";
+import TextField from "@material-ui/core/TextField";
+import RecipePhoto from "../../components/recipe-photo";
+import Button from "@material-ui/core/Button";
+import { makeStyles } from "@material-ui/core/styles";
+import SaveIcon from "@material-ui/icons/Save";
 
 const Container = styled.div`
   display: grid;
@@ -20,11 +20,14 @@ const Layout = styled.div`
   grid-template-rows: repeat(7, 1fr);
   max-width: 900px;
   min-width: 100px;
+  @media screen and (min-width: 850px) {
+    grid-columns: 1;
+  }
 `;
 
 const Box = styled.div`
   display: grid;
-  grid-row: ${props => (props.image ? 'span 4' : null)};
+  grid-row: ${props => (props.image ? "span 4" : null)};
 `;
 
 const Form = styled.form`
@@ -33,23 +36,25 @@ const Form = styled.form`
 
 const Separator = styled.div`
   display: flex;
-  /* grid-auto-rows: 1;*/
   grid-column: span 2;
   align-items: center;
   text-align: center;
   color: ${props => props.theme.colors[4]};
   &::before {
-    content: '';
+    content: "";
     flex: 1;
     border-bottom: 3px solid #a8cccc;
     margin-right: 0.5em;
   }
 
   &::after {
-    content: '';
+    content: "";
     flex: 1;
     border-bottom: 3px solid #a8cccc;
     margin-left: 0.5em;
+  }
+  @media (max-width: 684px) {
+    grid-column: span 1;
   }
 `;
 
@@ -63,19 +68,22 @@ const Profile = props => {
   const { logoutUser } = useContext(UserContext);
   const classes = useStyles();
   const initialState = {
-    firstName: '',
-    lastName: ''
+    firstName: "",
+    lastName: "",
+    email: ""
   };
 
   const reducer = (state, action) => {
     switch (action.type) {
-      case 'changeFirstName':
+      case "changeEmail":
+        return { ...state, email: action.payload };
+      case "changeFirstName":
         return { ...state, firstName: action.payload };
-      case 'changeLastName':
+      case "changeLastName":
         return { ...state, lastName: action.payload };
-      case 'firstPassword':
+      case "firstPassword":
         return { ...state, firstPassword: action.payload };
-      case 'secondPassword':
+      case "secondPassword":
         //compare with first password
         return { ...state, secondPassword: action.payload };
     }
@@ -93,7 +101,7 @@ const Profile = props => {
   };
 
   const submitForm = () => {
-    console.log('image ', image, 'state, ', state);
+    console.log("image ", image, "state, ", state);
     return;
   };
 
@@ -101,7 +109,7 @@ const Profile = props => {
     <Container>
       <Form onSubmit={submitForm} encType="multipart/form-data">
         <Layout>
-          <Separator>Profile</Separator>
+          {/*  <Separator>Profile</Separator>
 
           <TextField
             id="standard-required"
@@ -120,11 +128,11 @@ const Profile = props => {
             id="standard-required"
             label="Email address"
             onChange={e => dispatch({ type: 'changeEmail', payload: e })}
-          />
+          /> 
           <TextField
             id="standard-required"
-            label="Display name"
-            onChange={e => dispatch({ type: 'changeDisplayName', payload: e })}
+            label="Email"
+            onChange={e => dispatch({ type: "changeEmail", payload: e })}
           />
           <Button
             variant="contained"
@@ -141,14 +149,14 @@ const Profile = props => {
             label="Password"
             type="password"
             onChange={e =>
-              dispatch({ type: 'changeFirstPassword', payload: e })
+              dispatch({ type: "changeFirstPassword", payload: e })
             }
           />
           <TextField
             id="standard-required"
             label="Password "
             type="password"
-            onChange={e => dispatch({ type: 'changeLastPassword', payload: e })}
+            onChange={e => dispatch({ type: "changeLastPassword", payload: e })}
           />
           <Button
             variant="contained"
@@ -159,7 +167,8 @@ const Profile = props => {
           >
             Update password
           </Button>
-          <div></div>
+        
+          */}
           <Separator>Log out</Separator>
 
           <Button variant="contained" color="primary" onClick={logoutUser}>

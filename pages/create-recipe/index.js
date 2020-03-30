@@ -1,147 +1,205 @@
-import React, { useReducer, useCallback, useState } from 'react';
-import styled from 'styled-components';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
-import Icon from '@material-ui/core/Icon';
-import { createRecipe } from '../../actions/createRecipe';
-import RecipePhoto from '../../components/recipe-photo';
-import Ingredient from '../../components/ingredient';
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import React, { useReducer, useState } from "react";
+import styled, { withTheme } from "styled-components";
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
+import Icon from "@material-ui/core/Icon";
+import { createRecipe } from "../../actions/createRecipe";
+import RecipePhoto from "../../components/recipe-photo";
+import Ingredients from "./ingredients.js";
+import PersonIcon from "@material-ui/icons/Person";
+import Select from "@material-ui/core/Select";
+import FormControl from "@material-ui/core/FormControl";
+import { useForm, Controller } from "react-hook-form";
+import createOptions from "./createOptions.js";
+import { InputLabel } from "@material-ui/core";
+
+import "./style.css";
 
 const Container = styled.div`
-  display: grid;
+  display: flex;
   justify-content: center;
   margin: 50px 10px;
 `;
 
 const Form = styled.form`
-  display: grid;
-`;
-
-const Layout = styled.div`
-  display: grid;
-  grid-gap: 40px;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  grid-template-rows: repeat(4, 1fr);
+  display: flex;
+  flex-direction: column;
   max-width: 900px;
-  min-width: 100px;
+  width: 100%;
 `;
 
-const Box = styled.div`
-  display: grid;
-  grid-row: ${props => (props.image ? 'span 4' : null)};
+const Title = styled.div`
+  margin-bottom: 20px;
 `;
 
-const CreateRecipe = () => {
+const CreateRecipe = ({ theme }) => {
+  const { control, handleSubmit, register, errors } = useForm();
+
   const reducer = (state, action) => {
+    console.log("action.payload ", action.payload);
     switch (action.type) {
-      case 'editIngredient':
-        const arr = [...state.ingredients];
-        arr[action.payload.number] = {
-          ...arr[action.payload.number],
-          ingredient: action.payload.ingredient
-        };
+      case "deleteIngredient":
         return {
           ...state,
-          ingredients: arr
+          ingredients: state.ingredients.filter(
+            ingr => ingr.number !== action.payload
+          )
         };
-
-      case 'addIngredient':
+      case "addIngredient":
         return {
           ...state,
           ingredients: [
             ...state.ingredients,
-            { ingredient: '', number: state.ingredients.length }
+            {
+              ingredient: action.payload,
+              number: state.ingredients.length
+            }
           ]
         };
-      case 'changeName':
-        return { ...state, title: action.payload };
-
       default:
         throw new Error();
     }
   };
 
   const intialState = {
-    title: '',
-    ingredients: [
-      { ingredient: '', number: 0 },
-      { ingredient: '', number: 1 },
-      { ingredient: '', number: 2 }
-    ]
+    ingredients: []
   };
 
   const [image, setImage] = useState();
   const [imageUrl, setImageUrl] = useState();
-
   const [state, dispatch] = useReducer(reducer, intialState);
+  const [age, setAge] = React.useState("");
+
+  const handleChange = event => {
+    setAge(event.target.value);
+  };
 
   const uploadImage = () => {
     let file = event.target.files[0];
-    console.log('file ', file);
+    console.log("file ", file);
     const url = URL.createObjectURL(file);
     setImage(file);
     setImageUrl(url);
   };
 
-  const submitRecipe = e => {
-    e.preventDefault();
-    const data = {
+  const submitRecipe = data => {
+    const ingredients = {
       ...state,
       ingredients: state.ingredients
         .filter(ingredientAndPortion => {
-          return ingredientAndPortion.ingredient !== '';
+          return ingredientAndPortion.ingredient !== "";
         })
         .map(ingr => ingr.ingredient)
     };
-    //createRecipe(data, image);
+    console.log("data ", data);
+    console.log("image ", image);
+    console.log("ingredients ", ingredients);
+    createRecipe(data, ingredients, image);
   };
 
   return (
     <Container>
-      <Form onSubmit={submitRecipe} encType="multipart/form-data">
-        <Layout>
-          <Box>
-            <TextField
-              id="standard-required"
-              label="Name"
-              onChange={e =>
-                dispatch({ type: 'changeName', payload: e.target.value })
-              }
-            />
-          </Box>
-          <Box image>
-            <RecipePhoto image={imageUrl} uploadImage={uploadImage} />
-          </Box>
-
-          {state.ingredients.map(ing => {
-            return (
-              <Ingredient key={ing.number} dispatch={dispatch} ing={ing} />
-            );
-          })}
-        </Layout>
-        <div style={{ marginTop: '30px', marginBottom: '30px' }}>
-          <Button
-            variant="contained"
-            color="primary"
-            endIcon={<AddCircleOutlineIcon />}
-            onClick={() =>
-              dispatch({
-                type: 'addIngredient'
-              })
+      <Form onSubmit={handleSubmit(submitRecipe)} encType="multipart/form-data">
+        <Title>
+          <Controller
+            as={
+              <TextField
+                id="standard-error-helper-text"
+                label="Title"
+                error={errors.title}
+                helperText={errors.title ? "Title is missing" : null}
+                placeholder="fx. Hot Tomato soup with basil leaves"
+                fullWidth
+                inputProps={{
+                  style: {
+                    fontSize: 25,
+                    fontWeight: "bold",
+                    color: theme.textColor
+                  }
+                }}
+                inputRef={register({
+                  required: true
+                })}
+              />
             }
+            name="title"
+            control={control}
+          />
+        </Title>
+
+        <RecipePhoto image={imageUrl} uploadImage={uploadImage} />
+        <h3 style={{ color: theme.textColor, marginLeft: "7px" }}>
+          Number of servings
+        </h3>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <div style={{ marginRight: "10px" }}>
+            <PersonIcon fontSize="large" />
+          </div>
+          <FormControl
+            style={{ minWidth: 300 }}
+            error={Boolean(errors.wordlevel)}
+            required
           >
-            Add ingredients
-          </Button>
+            <InputLabel id="demo-simple-select-required-label">
+              How many servings?
+            </InputLabel>
+            <Controller
+              as={
+                <Select
+                  labelId="demo-simple-select-required-label"
+                  id="demo-simple-select-required"
+                  value={age}
+                  onChange={handleChange}
+                >
+                  {createOptions()}
+                </Select>
+              }
+              name="servings"
+              control={control}
+            />
+          </FormControl>
         </div>
-        <TextField
-          id="outlined-multiline-static"
-          label="Instructions"
-          multiline
-          rows="10"
-          variant="outlined"
+        <div style={{ margin: "25px 0px" }}>
+          <h3 style={{ color: theme.textColor }}>Cooking Time</h3>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center"
+            }}
+          >
+            <Controller
+              as={
+                <TextField
+                  required
+                  type="number"
+                  id="tentacles"
+                  name="tentacles"
+                  min="0"
+                />
+              }
+              name="time"
+              control={control}
+            />
+            <p style={{ marginLeft: "20px" }}>minutes</p>
+          </div>
+        </div>
+        <Ingredients dispatch={dispatch} ingredients={state.ingredients} />
+        <Controller
+          as={
+            <TextField
+              required
+              id="outlined-multiline-static"
+              label="Instructions"
+              multiline
+              rows="10"
+              variant="outlined"
+            />
+          }
+          name="instructions"
+          control={control}
         />
-        <div style={{ marginTop: '20px' }}>
+        <div style={{ marginTop: "20px" }}>
           <Button
             type="submit"
             variant="contained"
@@ -156,4 +214,4 @@ const CreateRecipe = () => {
   );
 };
 
-export default CreateRecipe;
+export default withTheme(CreateRecipe);
