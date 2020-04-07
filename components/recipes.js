@@ -5,7 +5,6 @@ import { Masonry } from "gestalt";
 import { usePaginatedFetch } from "../actions/usePaginatedFetch";
 
 const Container = styled.div`
-  overflow: scroll;
   height: 100vh;
   margin: 0px 15px 30px 15px;
 `;

@@ -1,8 +1,8 @@
-import React from 'react';
-import Document, { Html, Head, Main, NextScript } from 'next/document';
-import { ServerStyleSheet } from 'styled-components';
-import { ServerStyleSheets as MUIServerStyleSheets } from '@material-ui/styles';
-import { createMuiTheme, responsiveFontSizes } from '@material-ui/core/styles';
+import React from "react";
+import Document, { Html, Head, Main, NextScript } from "next/document";
+import { ServerStyleSheet } from "styled-components";
+import { ServerStyleSheets as MUIServerStyleSheets } from "@material-ui/styles";
+import { createMuiTheme, responsiveFontSizes } from "@material-ui/core/styles";
 
 const theme = responsiveFontSizes(createMuiTheme());
 
@@ -17,7 +17,10 @@ class MyDocument extends Document {
             content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no"
           />
           <meta name="theme-color" content={theme.palette.primary.main} />
-
+          <script
+            src="https://kit.fontawesome.com/95f79459e6.js"
+            crossorigin="anonymous"
+          ></script>
           <link
             rel="stylesheet"
             href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons"
@@ -35,7 +38,7 @@ class MyDocument extends Document {
                 box-sizing: border-box;
               }
               body {
-                font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+                font-family: "Roboto", "Helvetica", "Arial", sans-serif;
                 font-size: 1rem;
                 margin: 0;
               }
@@ -51,7 +54,7 @@ class MyDocument extends Document {
   }
 }
 
-MyDocument.getInitialProps = async ctx => {
+MyDocument.getInitialProps = async (ctx) => {
   // Render app and page and get the context of the page with collected side effects.
   const sheets = new ServerStyleSheet();
   const MUIsheets = new MUIServerStyleSheets();
@@ -60,8 +63,8 @@ MyDocument.getInitialProps = async ctx => {
 
   ctx.renderPage = () =>
     originalRenderPage({
-      enhanceApp: App => props =>
-        MUIsheets.collect(sheets.collectStyles(<App {...props} />))
+      enhanceApp: (App) => (props) =>
+        MUIsheets.collect(sheets.collectStyles(<App {...props} />)),
     });
 
   const initialProps = await Document.getInitialProps(ctx);
@@ -74,8 +77,8 @@ MyDocument.getInitialProps = async ctx => {
         {initialProps.styles}
         {sheets.getStyleElement()}
         {MUIsheets.getStyleElement()}
-      </React.Fragment>
-    ]
+      </React.Fragment>,
+    ],
   };
 };
 

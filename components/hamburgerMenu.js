@@ -3,7 +3,14 @@ import Link from "next/link";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 
-const HamburgerMenu = ({ anchorEl, isMenuOpen, handleMenuClose }) => {
+const HamburgerMenu = ({
+  anchorEl,
+  user,
+  openLoginDialog,
+  openRegisterDialog,
+  isMenuOpen,
+  handleMenuClose,
+}) => {
   return (
     <Menu
       anchorEl={anchorEl}
@@ -14,21 +21,52 @@ const HamburgerMenu = ({ anchorEl, isMenuOpen, handleMenuClose }) => {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <Link href="/profile">
-        <MenuItem onClick={handleMenuClose}>
-          <p>Profile</p>
-        </MenuItem>
-      </Link>
-      <Link href="/create-recipe">
-        <MenuItem onClick={handleMenuClose}>
-          <p>Create my own recipe</p>
-        </MenuItem>
-      </Link>
-      <Link href="/pin-recipe">
-        <MenuItem onClick={handleMenuClose}>
-          <p>Pin recipe</p>
-        </MenuItem>
-      </Link>
+      {user ? (
+        <div>
+          <Link href="/profile">
+            <MenuItem onClick={handleMenuClose}>
+              <p>Profile</p>
+            </MenuItem>
+          </Link>
+          <Link href="/create-recipe">
+            <MenuItem onClick={handleMenuClose}>
+              <p>Create my own recipe</p>
+            </MenuItem>
+          </Link>
+          <Link href="/pin-recipe">
+            <MenuItem onClick={handleMenuClose}>
+              <p>Pin recipe</p>
+            </MenuItem>
+          </Link>
+        </div>
+      ) : (
+        <div>
+          <MenuItem
+            onClick={() => {
+              openLoginDialog(true);
+              handleMenuClose();
+            }}
+          >
+            <p>Login</p>
+          </MenuItem>
+
+          <MenuItem
+            onClick={() => {
+              openRegisterDialog(true);
+              handleMenuClose();
+            }}
+          >
+            <p>Register</p>
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              console.log("not yet implemented");
+            }}
+          >
+            <p>Search</p>
+          </MenuItem>
+        </div>
+      )}
     </Menu>
   );
 };
