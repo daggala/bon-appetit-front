@@ -15,22 +15,15 @@ const Container = styled.div`
   }
 `;
 
-// grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-
 const Layout = styled.div`
   display: grid;
-  // grid-gap: 40px;
-  // grid-template-rows: repeat(4, auto);
   max-width: 900px;
   min-width: 100px;
-  // grid-columns: 2;
 `;
 
 const Box = styled.div`
   display: grid;
   margin-bottom: 20px;
-  // grid-row: ${(props) => (props.image ? "span 2" : null)};
-  // grid-column: ${(props) => (props.span ? `span ${props.span}` : null)};
 `;
 
 const Photo = styled.img`
@@ -40,13 +33,9 @@ const Photo = styled.img`
 
 const Title = styled.h1``;
 
-const Paragraph = styled.p`
-  margin: 0;
-`;
-
 const Recipe = ({ recipe }) => {
   // set the desired language
-  moment.lang("is");
+  moment.locale("is");
 
   // use one of the localized format strings
   var s = moment(recipe.createdAt).format("LL");
@@ -78,8 +67,12 @@ const Recipe = ({ recipe }) => {
           <div>
             <h3>Hráefni</h3>
             {recipe.ingredients && recipe.ingredients.length > 0
-              ? recipe.ingredients.map((ing) => {
-                  return <p style={{ margin: "0" }}>{ing}</p>;
+              ? recipe.ingredients.map((ing, index) => {
+                  return (
+                    <p style={{ margin: "0" }} key={index}>
+                      {ing}
+                    </p>
+                  );
                 })
               : null}
           </div>
@@ -101,7 +94,5 @@ Recipe.getInitialProps = async function ({ query }) {
   return {
     recipe: data,
   };
-
-  return {};
 };
 export default Recipe;
