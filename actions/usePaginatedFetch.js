@@ -7,20 +7,18 @@ const usePaginatedFetch = () => {
 
   const fetchMore = () => {
     if (!isFetching) {
-      setPage(prevPage => prevPage + 6);
+      setPage((prevPage) => prevPage + 6);
     }
   };
 
   useEffect(() => {
     const fetchData = async () => {
       setFetching(true);
-        console.log('page ', page);
       const response = await fetch(
         `http://localhost:3003/recipe/recipe?offset=${page}`
       );
       const json = await response.json();
-      console.log('json ', json);
-      setData(prevData => ({ items: [...prevData.items, ...json] }));
+      setData((prevData) => ({ items: [...prevData.items, ...json] }));
       setFetching(false);
     };
 

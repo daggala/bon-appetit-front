@@ -1,6 +1,5 @@
 import React, { useContext } from "react";
 import { fade, makeStyles } from "@material-ui/core/styles";
-import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import MenuIcon from "@material-ui/icons/Menu";
 import Link from "next/link";
@@ -24,8 +23,11 @@ const HomeLink = styled.div`
 
 const MenuBar = styled.div`
   display: flex;
-  height: 120px;
+  height: 80px;
   justify-content: space-between;
+  @media (min-width: 960px) {
+    height: 110px;
+  }
 `;
 
 const RegisterButtons = styled.div`
@@ -34,18 +36,53 @@ const RegisterButtons = styled.div`
   margin-top: 35px;
 `;
 
+const Logo = styled.img`
+  width: 170px;
+  margin-left: 25px;
+  margin-top: 20px;
+
+  @media (min-width: 960px) {
+    width: 220px;
+  }
+`;
+
+const HamburgerButton = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #005c4c;
+  border-radius: 5px;
+  &:hover {
+    background-color: #007c4c;
+  }
+
+  @media (min-width: 0px) {
+    margin-right: 10px;
+    margin-top: 15px;
+    width: 55px;
+    height: 55px;
+    svg {
+      height: 1.4em;
+      width: 1.4em;
+    }
+  }
+
+  @media (min-width: 600px) {
+    margin-right: 25px;
+    width: 40px;
+    height: 40px;
+    margin-top: 26px;
+    svg {
+      height: 1em;
+      width: 14em;
+    }
+  }
+  @media (min-width: 960px) {
+    display: none;
+  }
+`;
+
 const useStyles = makeStyles((theme) => ({
-  menuButton: {
-    marginRight: theme.spacing(2.5),
-    height: "60px",
-    marginLeft: "20px",
-    marginTop: "15px",
-    display: "flex",
-    [theme.breakpoints.up("md")]: {
-      display: "none",
-    },
-    color: "black",
-  },
   title: {
     textDecoration: "none",
     color: "white",
@@ -69,6 +106,7 @@ const useStyles = makeStyles((theme) => ({
   },
   searchIcon: {
     width: theme.spacing(7),
+    color: "black",
     height: "100%",
     position: "absolute",
     pointerEvents: "none",
@@ -81,6 +119,8 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
   },
   inputInput: {
+    height: "23px",
+    color: "black",
     padding: theme.spacing(1.3, 1, 1, 7),
     backgroundColor: fade(theme.palette.primary.main, 0.15),
     "&:hover": {
@@ -93,10 +133,15 @@ const useStyles = makeStyles((theme) => ({
   },
   registerButtons: {
     display: "none",
+    [theme.breakpoints.up("sm")]: {
+      display: "flex",
+      marginRight: "20px",
+      marginTop: "30px",
+    },
     [theme.breakpoints.up("md")]: {
       display: "flex",
       marginRight: "20px",
-      marginTop: "35px",
+      marginTop: "37px",
     },
   },
   appBar: {
@@ -105,11 +150,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function HideOnScroll(props) {
-  const { children, window } = props;
-  // Note that you normally won't need to set the window ref as useScrollTrigger
-  // will default to window.
-  // This is only being set here because the demo is in an iframe.
-  const trigger = useScrollTrigger({ target: window ? window() : undefined });
+  const { children } = props;
+  const trigger = useScrollTrigger();
 
   return (
     <Slide appear={false} direction="down" in={!trigger}>
@@ -120,11 +162,6 @@ function HideOnScroll(props) {
 
 HideOnScroll.propTypes = {
   children: PropTypes.element.isRequired,
-  /**
-   * Injected by the documentation to work in an iframe.
-   * You won't need it on your project.
-   */
-  window: PropTypes.func,
 };
 
 const Banner = () => {
@@ -146,8 +183,6 @@ const Banner = () => {
     setAnchorEl(null);
   };
 
-  console.log("isLoginDialogOpen ", isLoginDialogOpen);
-
   return (
     <>
       <CssBaseline />
@@ -157,14 +192,7 @@ const Banner = () => {
             <HomeLink>
               <Typography className={classes.title} variant="h6" noWrap>
                 <Link href="/">
-                  <img
-                    style={{
-                      width: "220px",
-                      marginLeft: "25px",
-                      marginTop: "20px",
-                    }}
-                    src="/../static/logo.png"
-                  />
+                  <Logo src="/../static/logo.png" />
                 </Link>
               </Typography>
             </HomeLink>
@@ -190,39 +218,35 @@ const Banner = () => {
               <Register onClickOutside={toggleRegisterDialog} />
             ) : null}
 
-            {user ? null : (
-              <RegisterButtons className={classes.registerButtons}>
-                <div style={{ marginRight: "10px" }}>
+            <div style={{ display: "flex", flexDirection: "row" }}>
+              {user ? null : (
+                <RegisterButtons className={classes.registerButtons}>
+                  <div style={{ marginRight: "10px" }}>
+                    <ColorButton
+                      variant="contained"
+                      color="primary"
+                      onClick={toggleLoginDialog}
+                    >
+                      Login
+                    </ColorButton>
+                  </div>
                   <ColorButton
                     variant="contained"
                     color="primary"
-                    onClick={toggleLoginDialog}
-                    style={{ height: "40px" }}
+                    onClick={toggleRegisterDialog}
                   >
-                    Login
+                    Register
                   </ColorButton>
-                </div>
-                <ColorButton
-                  variant="contained"
-                  color="primary"
-                  onClick={toggleRegisterDialog}
-                  style={{ height: "40px" }}
-                >
-                  Register
-                </ColorButton>
-              </RegisterButtons>
-            )}
+                </RegisterButtons>
+              )}
 
-            <IconButton
-              edge="start"
-              className={classes.menuButton}
-              color="inherit"
-              aria-label="open drawer"
-              onClick={handleProfileMenuOpen}
-            >
-              <MenuIcon fontSize="large" />
-            </IconButton>
-
+              <HamburgerButton
+                aria-label="open drawer"
+                onClick={handleProfileMenuOpen}
+              >
+                <MenuIcon fontSize="large" />
+              </HamburgerButton>
+            </div>
             <HamburgerMenu
               anchorEl={anchorEl}
               isMenuOpen={isMenuOpen}
