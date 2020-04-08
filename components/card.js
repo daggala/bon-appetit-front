@@ -1,7 +1,7 @@
-import React from 'react';
-import styled from 'styled-components';
-import Link from 'next/link';
-import 'gestalt/dist/gestalt.css';
+import React from "react";
+import styled from "styled-components";
+import Link from "next/link";
+import "gestalt/dist/gestalt.css";
 // import { Image } from "gestalt";
 
 //TODO: Look at this example: https://codesandbox.io/s/scroll-container-example-vpvdz
@@ -9,14 +9,20 @@ import 'gestalt/dist/gestalt.css';
 //So that they can be of different height without going into kleinar (overlapping)
 
 const Container = styled.div`
-  max-width: 450px;
   width: 100%;
   cursor: pointer;
+  @media (min-width: 516px) {
+    max-width: 450px;
+  }
 `;
 
 const Title = styled.p`
-  margin: 0;
+  margin-bottom: 10px;
+  margin-top: 4px;
   padding: 0;
+  @media (min-width: 516px) {
+    margin: 0;
+  }
 `;
 
 const Image = styled.img`
@@ -28,15 +34,9 @@ const Image = styled.img`
 
 const Card = ({ data }) => {
   return (
-    <Link
-      href={{ pathname: '/recipe/[id]' }}
-      as={`/recipe/${data.id}`}
-    >
+    <Link href={{ pathname: "/recipe/[id]" }} as={`/recipe/${data.id}`}>
       <Container>
-        <Image 
-         naturalHeight={1656}
-         naturalWidth={2500}
-        src={data.imageUrl} />
+        <Image naturalHeight={1656} naturalWidth={2500} src={data.imageUrl} />
         <Title>{data.title}</Title>
       </Container>
     </Link>

@@ -3,11 +3,16 @@ import styled from "styled-components";
 import QueryBuilderIcon from "@material-ui/icons/QueryBuilder";
 import PersonIcon from "@material-ui/icons/Person";
 import moment from "moment";
+import fetch from "isomorphic-unfetch";
+import { menuHeight, breakpoints } from "../../shared/variables";
 
 const Container = styled.div`
   display: grid;
   justify-content: center;
-  margin: 50px 50px;
+  margin: ${menuHeight.phone}px 50px 50px 50px;
+  @media (min-width: ${breakpoints.md}px) {
+    margin-top: ${menuHeight.desktop}px;
+  }
 `;
 
 // grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
@@ -19,13 +24,11 @@ const Layout = styled.div`
   max-width: 900px;
   min-width: 100px;
   // grid-columns: 2;
-  @media screen and (max-width: 850px) {
-    grid-columns: 1;
-  }
 `;
 
 const Box = styled.div`
   display: grid;
+  margin-bottom: 20px;
   // grid-row: ${(props) => (props.image ? "span 2" : null)};
   // grid-column: ${(props) => (props.span ? `span ${props.span}` : null)};
 `;
@@ -54,12 +57,6 @@ const Recipe = ({ recipe }) => {
           <Title>{recipe.title}</Title>
           <p style={{ margin: "0" }}>Höfundur: Dagný Lára Guðmundsdóttir</p>
           <p style={{ color: "grey", fontSize: "14px" }}>{s}</p>
-        </Box>
-        <Box image>
-          <Photo src={recipe.imageUrl} />
-        </Box>
-
-        <Box>
           <div
             style={{ display: "flex", alignItems: "center", marginTop: "10px" }}
           >
@@ -72,9 +69,15 @@ const Recipe = ({ recipe }) => {
             <PersonIcon />
             <p style={{ margin: "0px 10px" }}> fyrir {recipe.servings}</p>
           </div>
+        </Box>
+        <Box image>
+          <Photo src={recipe.imageUrl} />
+        </Box>
+
+        <Box>
           <div>
             <h3>Hráefni</h3>
-            {recipe.ingredients && ingredients.length > 0
+            {recipe.ingredients && recipe.ingredients.length > 0
               ? recipe.ingredients.map((ing) => {
                   return <p style={{ margin: "0" }}>{ing}</p>;
                 })

@@ -16,17 +16,18 @@ import useScrollTrigger from "@material-ui/core/useScrollTrigger";
 import PropTypes from "prop-types";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import AppBar from "@material-ui/core/AppBar";
-
+import { breakpoints } from "../shared/variables";
+import { menuHeight } from "../shared/variables";
 const HomeLink = styled.div`
   cursor: pointer;
 `;
 
 const MenuBar = styled.div`
   display: flex;
-  height: 80px;
+  height: ${menuHeight.phone}px;
   justify-content: space-between;
-  @media (min-width: 960px) {
-    height: 110px;
+  @media (min-width: ${breakpoints.md}px) {
+    height: ${menuHeight.desktop}px;
   }
 `;
 
@@ -41,7 +42,7 @@ const Logo = styled.img`
   margin-left: 25px;
   margin-top: 20px;
 
-  @media (min-width: 960px) {
+  @media (min-width: ${breakpoints.md}px) {
     width: 220px;
   }
 `;
@@ -56,7 +57,7 @@ const HamburgerButton = styled.div`
     background-color: #007c4c;
   }
 
-  @media (min-width: 0px) {
+  @media (min-width: ${breakpoints.xs}px) {
     margin-right: 10px;
     margin-top: 15px;
     width: 55px;
@@ -67,7 +68,7 @@ const HamburgerButton = styled.div`
     }
   }
 
-  @media (min-width: 600px) {
+  @media (min-width: ${breakpoints.sm}px) {
     margin-right: 25px;
     width: 40px;
     height: 40px;
@@ -77,7 +78,7 @@ const HamburgerButton = styled.div`
       width: 14em;
     }
   }
-  @media (min-width: 960px) {
+  @media (min-width: ${breakpoints.md}px) {
     display: none;
   }
 `;

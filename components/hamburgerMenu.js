@@ -36,10 +36,8 @@ const HamburgerMenu = ({
         vertical: "top",
         horizontal: "center",
       }}
-      //anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
       id="simple-menu"
       keepMounted
-      //transformOrigin={{ vertical: "bottom", horizontal: "left" }}
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
