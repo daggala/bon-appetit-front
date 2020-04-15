@@ -16,8 +16,7 @@ import useScrollTrigger from "@material-ui/core/useScrollTrigger";
 import PropTypes from "prop-types";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import AppBar from "@material-ui/core/AppBar";
-import { breakpoints } from "../shared/variables";
-import { menuHeight } from "../shared/variables";
+import { breakpoints, menuHeight } from "../shared/variables";
 const HomeLink = styled.div`
   cursor: pointer;
 `;
@@ -79,7 +78,8 @@ const HamburgerButton = styled.div`
     }
   }
   @media (min-width: ${breakpoints.md}px) {
-    display: none;
+    display: ${(props) => (props.user ? "flex" : "none")};
+    margin-top: 37px;
   }
 `;
 
@@ -244,6 +244,7 @@ const Banner = () => {
               <HamburgerButton
                 aria-label="open drawer"
                 onClick={handleProfileMenuOpen}
+                user={user}
               >
                 <MenuIcon fontSize="large" />
               </HamburgerButton>

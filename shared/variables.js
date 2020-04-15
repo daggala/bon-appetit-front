@@ -8,6 +8,6 @@ export const breakpoints = {
 };
 
 export const menuHeight = {
-  desktop: 110,
-  phone: 80,
+  desktop: 110, //md and bigger
+  phone: 80, //xs until md
 };

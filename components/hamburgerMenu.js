@@ -58,6 +58,14 @@ const HamburgerMenu = ({
               <p>Pin recipe</p>
             </StyledMenuItem>
           </Link>
+          <Link
+            href={{ pathname: "/my-recipes/[id]" }}
+            as={`/my-recipes/${user.id}`}
+          >
+            <StyledMenuItem onClick={handleMenuClose}>
+              <p>My Recipes</p>
+            </StyledMenuItem>
+          </Link>
         </div>
       ) : (
         <div>

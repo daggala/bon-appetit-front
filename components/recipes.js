@@ -4,15 +4,8 @@ import Card from "./card.js";
 import { Masonry } from "gestalt";
 import { usePaginatedFetch } from "../actions/usePaginatedFetch";
 import useViewport from "../shared/hooks/useViewport.js";
-import { breakpoints } from "../shared/variables";
 
-const Container = styled.div`
-  height: 100vh;
-  margin: 100px 15px 30px 15px;
-  @media (min-width: ${breakpoints.md}px) {
-    margin-top: 130px;
-  }
-`;
+const Container = styled.div``;
 
 function CardList({ data }) {
   return (
@@ -24,13 +17,13 @@ function CardList({ data }) {
   );
 }
 
-const Recipes = () => {
+const Recipes = ({ url }) => {
   //can also add isFetching like so: const [{ data, isFetching }
-  const [{ data }, fetchItems] = usePaginatedFetch();
+  const [{ data }, fetchItems] = usePaginatedFetch(url);
 
   const domValue = createRef();
   const { width } = useViewport();
-
+  console.log("data ", data);
   return (
     <Container ref={domValue}>
       {width > 515 ? (
