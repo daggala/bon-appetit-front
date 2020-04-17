@@ -1,75 +1,109 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
-import Icon from '@material-ui/core/Icon';
-import { createRecipe } from '../../actions/createRecipe';
-import RecipePhoto from '../../components/recipe-photo';
-import { useForm, Controller } from 'react-hook-form';
+import React, { useState } from "react";
+import styled from "styled-components";
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
+import Icon from "@material-ui/core/Icon";
+import { createRecipe } from "../../actions/createRecipe";
+import RecipePhoto from "../../components/recipe-photo";
+import { useForm, Controller } from "react-hook-form";
+import { menuHeight, breakpoints } from "../../shared/variables";
+import Router from "next/router";
 
 const Container = styled.div`
-  display: grid;
+  display: flex;
   justify-content: center;
-  margin: 50px 10px;
+  margin: ${menuHeight.phone + 30}px 10px 50px 10px;
+  @media (min-width: ${breakpoints.sm}px) {
+    margin-right: 40px;
+    margin-left: 50px;
+  }
+  @media (min-width: ${breakpoints.md}px) {
+    margin-top: ${menuHeight.desktop + 50}px;
+  }
 `;
 
 const Layout = styled.div`
-  display: grid;
-  grid-gap: 40px;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  grid-template-rows: repeat(7, 1fr);
+  display: flex;
+  flex-direction: column;
+  @media (min-width: ${breakpoints.sm + 150}px) {
+    flex-direction: row;
+  }
+  width: 100%;
+`;
+
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
   max-width: 900px;
-  min-width: 100px;
+  width: 100%;
+`;
+
+const Column = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-right: 30px;
 `;
 
 const Box = styled.div`
-  display: grid;
-  grid-row: ${props => (props.image ? 'span 4' : null)};
+  display: flex;
 `;
 
 const CreateRecipe = () => {
   const { control, handleSubmit, register, errors } = useForm();
 
+  const [image, setImage] = useState();
   const [imageUrl, setImageUrl] = useState();
+  const [imageError, setImageError] = useState();
 
-  const uploadImage = e => {
-    const file = event.target.files[0];
+  const uploadImage = () => {
+    let file = event.target.files[0];
     const url = URL.createObjectURL(file);
+    setImage(file);
     setImageUrl(url);
   };
 
+  function submitForm(data) {
+    if (!imageUrl) {
+      setImageError(true);
+      return;
+    }
+    createRecipe(data, null, image).then(() => {
+      console.log("then");
+      Router.push("/");
+    });
+  }
+
   return (
     <Container>
-      <form onSubmit={handleSubmit(createRecipe)} encType="multipart/form-data">
+      <Form onSubmit={handleSubmit(submitForm)} encType="multipart/form-data">
         <Layout>
-          <Box>
+          <Column>
+            <RecipePhoto
+              error={imageError}
+              image={imageUrl}
+              uploadImage={uploadImage}
+            />
+          </Column>
+          <Column>
             <Controller
               as={
                 <TextField
+                  style={{ width: "100%", marginBottom: "25px" }}
                   error={errors.title}
                   id="standard-error-helper-text"
                   label="Title"
                   inputRef={register({
-                    required: true
+                    required: true,
                   })}
-                  helperText={errors.title ? 'Title is missing' : null}
+                  helperText={errors.title ? "Title is missing" : null}
                 />
               }
               name="title"
               control={control}
               defaultValue=""
             />
-          </Box>
 
-          <Box image>
-            <RecipePhoto
-              error={errors.file}
-              ref={register({ required: true })}
-              image={imageUrl}
-              uploadImage={uploadImage}
-            />
-          </Box>
-          <Box>
             <Controller
               as={
                 <TextField
@@ -78,7 +112,7 @@ const CreateRecipe = () => {
                   label="Url"
                   inputRef={register({ required: true })}
                   helperText={
-                    errors.title ? 'Please provide URL to the recipe' : null
+                    errors.title ? "Please provide URL to the recipe" : null
                   }
                 />
               }
@@ -86,19 +120,20 @@ const CreateRecipe = () => {
               control={control}
               defaultValue=""
             />
-          </Box>
-          <div style={{ marginTop: '20px' }}>
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              endIcon={<Icon>send</Icon>}
-            >
-              Submit recipe
-            </Button>
-          </div>
+
+            <div style={{ marginTop: "50px" }}>
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                endIcon={<Icon>send</Icon>}
+              >
+                Post recipe
+              </Button>
+            </div>
+          </Column>
         </Layout>
-      </form>
+      </Form>
     </Container>
   );
 };

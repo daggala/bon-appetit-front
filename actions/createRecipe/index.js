@@ -10,7 +10,7 @@ export const createRecipe = (recipe, ingredients, image) => {
   const data = new FormData();
   data.append("title", recipe.title);
   recipe.portions ? data.append("servings", recipe.portions) : null;
-  data.append("minutes", recipe.time);
+  recipe.time ? data.append("minutes", recipe.time) : null;
   data.append("instructions", recipe.instructions);
   recipe.link ? data.append("url", recipe.link) : null;
   ingredients ? data.append("ingredients", JSON.stringify(ingredients)) : null;

@@ -170,7 +170,6 @@ const CreateRecipe = ({ theme }) => {
 
   const uploadImage = () => {
     let file = event.target.files[0];
-    console.log("file ", file);
     const url = URL.createObjectURL(file);
     setImage(file);
     setImageUrl(url);
