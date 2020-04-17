@@ -1,4 +1,4 @@
-import React, { useReducer, useState } from "react";
+import React, { useReducer, useState, useEffect } from "react";
 import styled, { withTheme } from "styled-components";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
@@ -10,18 +10,23 @@ import PersonIcon from "@material-ui/icons/Person";
 import { useForm, Controller } from "react-hook-form";
 import { menuHeight, breakpoints } from "../../shared/variables";
 import AccessTimeIcon from "@material-ui/icons/AccessTime";
-
 import "./style.css";
+import Router from "next/router";
 
 const PhotoContainer = styled.div`
   display: flex;
   flex-direction: column;
+  width: 100%;
 `;
 
 const Container = styled.div`
   display: flex;
   justify-content: center;
   margin: ${menuHeight.phone + 30}px 10px 50px 10px;
+  @media (min-width: ${breakpoints.sm}px) {
+    margin-right: 40px;
+    margin-left: 50px;
+  }
   @media (min-width: ${breakpoints.md}px) {
     margin-top: ${menuHeight.desktop + 50}px;
   }
@@ -36,33 +41,53 @@ const Form = styled.form`
 
 const Title = styled.div`
   margin-bottom: 20px;
-  max-width: 700px;
 `;
 
 const Row = styled.div`
   display: flex;
   flex-direction: column;
+  align-self: center;
+  @media (min-width: ${breakpoints.md}px) {
+    flex-direction: row;
+    max-width: 900px:
+    justify-content: space-between;
+  
+  }
+ 
+
+`;
+
+const PhotoRow = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-top: 30px;
+  width: 100%;
+  align-items: center;
+  height: 100%;
+  @media (min-width: ${breakpoints.md}px) {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+`;
+
+const NumberField = styled.div`
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 25px;
+
+  @media (min-width: ${breakpoints.xs}px) {
+    flex-direction: column;
+  }
   @media (min-width: ${breakpoints.sm}px) {
     flex-direction: row;
   }
-`;
-
-const PhotoRow = styled(Row)`
-  margin-top: 30px;
-`;
-
-const Portions = styled.div``;
-
-const Time = styled.div`
-  margin-bottom: 25px;
   @media (min-width: ${breakpoints.md}px) {
-    margin-left: 50px;
+    flex-direction: column;
   }
 `;
 
-const Instructions = styled.div`
-  width: 100%;
-  margin-top: 15px;
+const NumberFieldTitle = styled.h3`
+  margin-right: 50px;
 `;
 
 const Separator = styled.div`
@@ -70,23 +95,23 @@ const Separator = styled.div`
   background-color: #005c4c;
   opacity: 0.5;
   margin-left: 60px;
-  height: 80%;
+  margin-right: 60px;
   margin-top: 10px;
 `;
 
-const Label = styled.label`
-  font-size: 16px;
-  font-family: Roboto;
-  margin-bottom: 30px;
-  font-weight: bold;
+const Instructions = styled.div`
+  width: 100%;
+  height: 100%;
+
+  @media (min-width: ${breakpoints.md}px) {
+    margin-left: 30px;
+  }
 `;
 
 const Multiline = styled.textarea`
   width: 100%;
-  min-height: 300px;
-  height: 90%;
+  margin-left: 0px;
   border-width: 1px;
-  margin-top: 20px;
   outline: none;
   padding: 20px;
   font-size: 16px;
@@ -95,6 +120,13 @@ const Multiline = styled.textarea`
   border-radius: 5px;
   background-color: #fafafa;
   border-color: ${(props) => (props.error ? "#f44336" : "rgba(0, 0, 0, 0.23)")};
+  &:focus {
+    border-color: #006666;
+  }
+  height: 300px;
+  @media (min-width: ${breakpoints.md}px) {
+    height: 88%;
+  }
 `;
 
 const CreateRecipe = ({ theme }) => {
@@ -131,9 +163,9 @@ const CreateRecipe = ({ theme }) => {
   };
 
   const [image, setImage] = useState();
-  const [imageUrl, setImageUrl] = useState();
-  const [imageError, setImageError] = useState();
-
+  const [imageUrl, setImageUrl] = useState("");
+  const [ingredientsError, setIngredientsError] = useState(false);
+  const [imageError, setImageError] = useState(false);
   const [state, dispatch] = useReducer(reducer, intialState);
 
   const uploadImage = () => {
@@ -145,25 +177,30 @@ const CreateRecipe = ({ theme }) => {
   };
 
   const submitRecipe = (data) => {
-    const ingredients = {
-      ...state,
-      ingredients: state.ingredients
+    const ingredients = [
+      ...state.ingredients
         .filter((ingredientAndPortion) => {
           return ingredientAndPortion.ingredient !== "";
         })
         .map((ingr) => ingr.ingredient),
-    };
-    console.log("data ", data);
-    console.log("image ", image);
-    console.log("ingredients ", ingredients);
+    ];
+    if (ingredients.length < 1) {
+      setIngredientsError(true);
+      return;
+    } else {
+      setIngredientsError(false);
+    }
     if (!imageUrl) {
       setImageError(true);
       return;
+    } else {
+      setImageError(false);
     }
-    createRecipe(data, ingredients, image);
+    createRecipe(data, ingredients, image).then(() => {
+      Router.push("/");
+    });
   };
 
-  console.log("errors ", errors);
   return (
     <Container>
       <Form onSubmit={handleSubmit(submitRecipe)} encType="multipart/form-data">
@@ -171,11 +208,9 @@ const CreateRecipe = ({ theme }) => {
           <Controller
             as={
               <TextField
-                id="standard-error-helper-text"
                 label="Title"
                 error={!!errors.title}
                 helperText={errors.title ? "Title is missing" : null}
-                placeholder="example: Hot Tomato Soup with Basil Leaves"
                 fullWidth
                 inputProps={{
                   style: {
@@ -195,14 +230,14 @@ const CreateRecipe = ({ theme }) => {
         </Title>
 
         <Row style={{ marginTop: "15px" }}>
-          <Portions>
-            <h3
+          <NumberField>
+            <NumberFieldTitle
               style={{
                 color: theme.textColor,
               }}
             >
               Number of servings
-            </h3>
+            </NumberFieldTitle>
 
             <div
               style={{
@@ -217,9 +252,9 @@ const CreateRecipe = ({ theme }) => {
               <Controller
                 as={
                   <TextField
-                    id="standard-error-helper-text"
-                    style={{ width: "20px", whiteSpace: "nowrap" }}
+                    style={{ width: "40px", whiteSpace: "nowrap" }}
                     name="portions"
+                    type="number"
                     error={!!errors.portions}
                     helperText={errors.portions ? "Portions is missing" : null}
                     inputRef={register({
@@ -232,10 +267,14 @@ const CreateRecipe = ({ theme }) => {
               />
               <p style={{ marginLeft: "15px" }}>portions</p>
             </div>
-          </Portions>
+          </NumberField>
           <Separator />
-          <Time>
-            <h3 style={{ color: theme.textColor }}>Preparation Time</h3>
+          <NumberField>
+            <NumberFieldTitle
+              style={{ color: theme.textColor, marginRight: "70px" }}
+            >
+              Preparation Time
+            </NumberFieldTitle>
             <div
               style={{
                 display: "flex",
@@ -248,10 +287,11 @@ const CreateRecipe = ({ theme }) => {
               <Controller
                 as={
                   <TextField
-                    style={{ width: "40px", whiteSpace: "nowrap" }}
+                    type="number"
+                    style={{ width: "60px", whiteSpace: "nowrap" }}
                     error={!!errors.time}
                     helperText={
-                      errors.time ? "Preparation time is missing" : null
+                      errors.time ? "Please enter preparation time" : null
                     }
                     inputRef={register({
                       required: true,
@@ -263,10 +303,14 @@ const CreateRecipe = ({ theme }) => {
               />
               <p style={{ marginLeft: "15px" }}>minutes</p>
             </div>
-          </Time>
+          </NumberField>
           <Separator />
-          <Time>
-            <h3 style={{ color: theme.textColor }}>Cooking Time</h3>
+          <NumberField>
+            <NumberFieldTitle
+              style={{ color: theme.textColor, marginRight: "95px" }}
+            >
+              Cooking Time
+            </NumberFieldTitle>
             <div
               style={{
                 display: "flex",
@@ -279,7 +323,8 @@ const CreateRecipe = ({ theme }) => {
               <Controller
                 as={
                   <TextField
-                    style={{ width: "40px", whiteSpace: "nowrap" }}
+                    type="number"
+                    style={{ width: "60px", whiteSpace: "nowrap" }}
                     error={!!errors.cooktime}
                     helperText={
                       errors.cooktime ? "Cooking time is missing" : null
@@ -294,29 +339,21 @@ const CreateRecipe = ({ theme }) => {
               />
               <p style={{ marginLeft: "15px" }}>minutes</p>
             </div>
-          </Time>
+          </NumberField>
         </Row>
 
         <PhotoRow>
           <PhotoContainer>
             <h3>Photo</h3>
-            <Controller
-              as={
-                <RecipePhoto
-                  image={imageUrl}
-                  uploadImage={uploadImage}
-                  error={errors.file}
-                  ref={register({
-                    required: true,
-                  })}
-                />
-              }
-              name="file"
-              control={control}
+
+            <RecipePhoto
+              image={imageUrl}
+              uploadImage={uploadImage}
+              error={imageError}
             />
           </PhotoContainer>
           <Instructions>
-            <Label>Instructions</Label>
+            <h3>Instructions</h3>
             <Controller
               as={
                 <Multiline
@@ -341,17 +378,38 @@ const CreateRecipe = ({ theme }) => {
             ) : null}
           </Instructions>
         </PhotoRow>
-        <Ingredients dispatch={dispatch} ingredients={state.ingredients} />
-
-        <div style={{ marginTop: "20px" }}>
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            endIcon={<Icon>send</Icon>}
+        <Ingredients
+          dispatch={dispatch}
+          ingredients={state.ingredients}
+          error={ingredientsError}
+        />
+        <div
+          style={{ display: "flex", flexDirecton: "row", alignItems: "center" }}
+        >
+          <div
+            style={{
+              marginTop: "20px",
+              marginRight: "20px",
+              whiteSpace: "nowrap",
+            }}
           >
-            Submit recipe
-          </Button>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              endIcon={<Icon>send</Icon>}
+            >
+              Post recipe
+            </Button>
+          </div>
+          {Object.keys(errors).length === 0 &&
+          errors.constructor === Object &&
+          !ingredientsError &&
+          !imageError ? null : (
+            <p style={{ color: "#f44336", marginTop: "30px" }}>
+              Please take a look at the form, some fields are missing
+            </p>
+          )}
         </div>
       </Form>
     </Container>

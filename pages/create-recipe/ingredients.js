@@ -6,6 +6,7 @@ import Chip from "@material-ui/core/Chip";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import { withStyles } from "@material-ui/core/styles";
+import { menuHeight, breakpoints } from "../../shared/variables";
 
 const StyledSVG = withStyles((theme) => ({
   root: {
@@ -13,6 +14,7 @@ const StyledSVG = withStyles((theme) => ({
     borderColor: theme.palette.primary.main,
     borderWidth: "1px",
     borderStyle: "solid",
+    margin: "5px",
     "&:hover": {
       borderColor: theme.palette.primary.dark,
 
@@ -27,8 +29,13 @@ const StyledSVG = withStyles((theme) => ({
 }))(Chip);
 
 const Container = styled.div`
+  display: flex;
+  flex-direction: column;
   margin-top: 30px;
-  max-width: 460px;
+  width: 100%;
+  @media (min-width: ${breakpoints.md}px) {
+    flex-direction: row;
+  }
 `;
 
 const AddButton = styled.button`
@@ -42,6 +49,16 @@ const IngredientsContainer = styled.div`
   flex-direction: row;
   flex-wrap: wrap;
   margin-bottom: 30px;
+  margin-top: 20px;
+  @media (min-width: ${breakpoints.md}px) {
+    margin-left: 20px;
+    margin-top: 50px;
+  }
+`;
+
+const Column = styled.div`
+  display: flex;
+  flex-direction: column;
 `;
 
 const useStyles = makeStyles((theme) => ({
@@ -63,7 +80,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Ingredients = ({ dispatch, ingredients, theme }) => {
+const Ingredients = ({ dispatch, ingredients, error, theme }) => {
   const classes = useStyles();
 
   const [tempIngredient, setTempIngredient] = useState("");
@@ -84,81 +101,95 @@ const Ingredients = ({ dispatch, ingredients, theme }) => {
 
   return (
     <Container>
-      <h3
-        style={{ color: theme.textColor, marginLeft: "7px", marginTop: "0px" }}
-      >
-        Ingredients
-      </h3>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-        }}
-      >
-        <TextField
-          id="outlined-basic"
-          label="Add ingredient"
-          value={tempIngredient}
-          onChange={(e) => {
-            e.preventDefault();
-            return setTempIngredient(e.target.value);
-          }}
-          variant="outlined"
-          onKeyDown={handleKeyDown}
-          fullWidth
-        />
-
-        <div
+      <Column>
+        <h3
           style={{
-            marginTop: "15px",
-            marginBottom: "15px",
-            marginLeft: "10px",
+            color: theme.textColor,
+            marginLeft: "7px",
+            marginTop: "0px",
           }}
         >
-          <AddButton
-            type="button"
-            onClick={() => {
-              dispatch({
-                type: "addIngredient",
-                payload: tempIngredient,
-              });
-              setTempIngredient("");
+          Ingredients
+        </h3>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            maxWidth: "460px",
+          }}
+        >
+          <TextField
+            style={{ width: "460px" }}
+            id="outlined-basic"
+            label="Add ingredient"
+            value={tempIngredient}
+            onChange={(e) => {
+              e.preventDefault();
+              return setTempIngredient(e.target.value);
             }}
-            disabled={!tempIngredient}
+            variant="outlined"
+            onKeyDown={handleKeyDown}
+            fullWidth
+            error={error}
+            helperText={
+              error ? "You should enter at least one ingredient" : null
+            }
+          />
+
+          <div
+            style={{
+              marginTop: "15px",
+              marginBottom: "15px",
+              marginLeft: "10px",
+            }}
           >
-            {isButtonHovered ? (
-              <AddCircleIcon
-                className={classes.add}
-                style={{ fontSize: 40, color: theme.colors[2] }}
-                onMouseEnter={() => setButtonHover(true)}
-                onMouseLeave={() => setButtonHover(false)}
-              />
-            ) : (
-              <AddCircleOutlineIcon
-                className={classes.add}
-                style={{ fontSize: 40, color: theme.colors[2] }}
-                onMouseEnter={() => setButtonHover(true)}
-                onMouseLeave={() => setButtonHover(false)}
-              />
-            )}
-          </AddButton>
+            <AddButton
+              type="button"
+              onClick={() => {
+                dispatch({
+                  type: "addIngredient",
+                  payload: tempIngredient,
+                });
+                setTempIngredient("");
+              }}
+              disabled={!tempIngredient}
+            >
+              {isButtonHovered ? (
+                <AddCircleIcon
+                  className={classes.add}
+                  style={{ fontSize: 40, color: theme.colors[2] }}
+                  onMouseEnter={() => setButtonHover(true)}
+                  onMouseLeave={() => setButtonHover(false)}
+                />
+              ) : (
+                <AddCircleOutlineIcon
+                  className={classes.add}
+                  style={{ fontSize: 40, color: theme.colors[2] }}
+                  onMouseEnter={() => setButtonHover(true)}
+                  onMouseLeave={() => setButtonHover(false)}
+                />
+              )}
+            </AddButton>
+          </div>
         </div>
-      </div>
-      <IngredientsContainer>
-        {ingredients.map((ing) => {
-          return (
-            <StyledSVG
-              key={ing.number}
-              label={ing.ingredient}
-              onDelete={() =>
-                dispatch({ type: "deleteIngredient", payload: ing.number })
-              }
-              className={classes.chip}
-            />
-          );
-        })}
-      </IngredientsContainer>
+      </Column>
+      <Column>
+        <IngredientsContainer>
+          {ingredients.map((ing) => {
+            return (
+              <StyledSVG
+                key={ing.number}
+                label={ing.ingredient}
+                onDelete={() =>
+                  dispatch({ type: "deleteIngredient", payload: ing.number })
+                }
+                className={classes.chip}
+              />
+            );
+          })}
+        </IngredientsContainer>
+      </Column>
     </Container>
   );
 };

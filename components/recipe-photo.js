@@ -2,15 +2,19 @@ import React from "react";
 import styled from "styled-components";
 import CameraAltIcon from "@material-ui/icons/CameraAlt";
 import { makeStyles } from "@material-ui/core/styles";
+import { breakpoints } from "../shared/variables";
 
 const ImageInput = styled.input`
   display: none;
 `;
 
 const PreviewImage = styled.img`
-  width: 500px;
+  width: 100%;
   object-fit: cover;
-  margin-right: 30px;
+  margin-bottom: 30px;
+  @media (min-width: ${breakpoints.md}px) {
+    margin-bottom: 0px;
+  }
 `;
 
 const Label = styled.label`
@@ -24,11 +28,17 @@ const Label = styled.label`
     background-color: #a8cccc;
   }
   height: 400px;
-  min-width: 450px;
-  width: 450px;
-  margin-right: 30px;
+  width: 100%;
+  min-width: 100%;
   border-radius: 5px;
+  margin-bottom: 30px;
+  @media (min-width: ${breakpoints.md}px) {
+    margin-bottom: 0px;
+    min-width: 450px;
+    width: 450px;
+  }
 `;
+
 function iconStyles() {
   return {
     successIcon: {
@@ -41,14 +51,14 @@ function iconStyles() {
     },
   };
 }
-const RecipePhoto = React.forwardRef((props, ref) => {
+const RecipePhoto = (props) => {
   const classes = makeStyles(iconStyles)();
 
   return (
     <>
       {props.image ? (
         <label htmlFor="file-upload">
-          <PreviewImage src={props.image} ref={photoRef} />
+          <PreviewImage src={props.image} />
         </label>
       ) : (
         <Label htmlFor="file-upload" error={props.error}>
@@ -61,7 +71,6 @@ const RecipePhoto = React.forwardRef((props, ref) => {
         </Label>
       )}
       <ImageInput
-        ref={ref}
         id="file-upload"
         type="file"
         name="file"
@@ -70,6 +79,6 @@ const RecipePhoto = React.forwardRef((props, ref) => {
       />
     </>
   );
-});
+};
 
 export default RecipePhoto;
