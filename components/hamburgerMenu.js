@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useContext } from "react";
+import { UserContext } from "../utils/context";
+
 import Link from "next/link";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
@@ -24,6 +26,8 @@ const HamburgerMenu = ({
   isMenuOpen,
   handleMenuClose,
 }) => {
+  const { logoutUser } = useContext(UserContext);
+
   return (
     <Menu
       anchorEl={anchorEl}
@@ -43,11 +47,6 @@ const HamburgerMenu = ({
     >
       {user ? (
         <div>
-          <Link href="/profile">
-            <StyledMenuItem onClick={handleMenuClose}>
-              <p>Profile</p>
-            </StyledMenuItem>
-          </Link>
           <Link href="/create-recipe">
             <StyledMenuItem onClick={handleMenuClose}>
               <p>Create my own recipe</p>
@@ -66,6 +65,14 @@ const HamburgerMenu = ({
               <p>My Recipes</p>
             </StyledMenuItem>
           </Link>
+          <StyledMenuItem
+            onClick={() => {
+              logoutUser();
+              handleMenuClose();
+            }}
+          >
+            <p>Logout</p>
+          </StyledMenuItem>
         </div>
       ) : (
         <div>
