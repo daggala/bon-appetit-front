@@ -27,7 +27,7 @@ const Layout = styled.div`
 
 const Box = styled.div`
   display: grid;
-  grid-row: ${props => (props.image ? "span 4" : null)};
+  grid-row: ${(props) => (props.image ? "span 4" : null)};
 `;
 
 const Form = styled.form`
@@ -39,7 +39,7 @@ const Separator = styled.div`
   grid-column: span 2;
   align-items: center;
   text-align: center;
-  color: ${props => props.theme.colors[4]};
+  color: ${(props) => props.theme.colors[4]};
   &::before {
     content: "";
     flex: 1;
@@ -58,19 +58,19 @@ const Separator = styled.div`
   }
 `;
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   button: {
-    margin: theme.spacing(1)
-  }
+    margin: theme.spacing(1),
+  },
 }));
 
-const Profile = props => {
+const Profile = (props) => {
   const { logoutUser } = useContext(UserContext);
   const classes = useStyles();
   const initialState = {
     firstName: "",
     lastName: "",
-    email: ""
+    email: "",
   };
 
   const reducer = (state, action) => {
@@ -93,7 +93,7 @@ const Profile = props => {
   const [imageUrl, setImageUrl] = useState();
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const changeImage = e => {
+  const changeImage = (e) => {
     const file = e.target.files[0];
     const url = URL.createObjectURL(file);
     setImage(file);
@@ -101,7 +101,6 @@ const Profile = props => {
   };
 
   const submitForm = () => {
-    console.log("image ", image, "state, ", state);
     return;
   };
 

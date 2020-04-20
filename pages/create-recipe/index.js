@@ -133,7 +133,6 @@ const CreateRecipe = ({ theme }) => {
   const { control, handleSubmit, register, errors } = useForm();
 
   const reducer = (state, action) => {
-    console.log("action.payload ", action.payload);
     switch (action.type) {
       case "deleteIngredient":
         return {
@@ -288,16 +287,16 @@ const CreateRecipe = ({ theme }) => {
                   <TextField
                     type="number"
                     style={{ width: "60px", whiteSpace: "nowrap" }}
-                    error={!!errors.time}
+                    error={!!errors.prepTime}
                     helperText={
-                      errors.time ? "Please enter preparation time" : null
+                      errors.prepTime ? "Please enter preparation time" : null
                     }
                     inputRef={register({
                       required: true,
                     })}
                   />
                 }
-                name="time"
+                name="prepTime"
                 control={control}
               />
               <p style={{ marginLeft: "15px" }}>minutes</p>
@@ -324,16 +323,16 @@ const CreateRecipe = ({ theme }) => {
                   <TextField
                     type="number"
                     style={{ width: "60px", whiteSpace: "nowrap" }}
-                    error={!!errors.cooktime}
+                    error={!!errors.cookTime}
                     helperText={
-                      errors.cooktime ? "Cooking time is missing" : null
+                      errors.cookTime ? "Cooking time is missing" : null
                     }
                     inputRef={register({
                       required: true,
                     })}
                   />
                 }
-                name="cooktime"
+                name="cookTime"
                 control={control}
               />
               <p style={{ marginLeft: "15px" }}>minutes</p>

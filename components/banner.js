@@ -220,7 +220,26 @@ const Banner = () => {
             ) : null}
 
             <div style={{ display: "flex", flexDirection: "row" }}>
-              {user ? null : (
+              {user ? (
+                <RegisterButtons className={classes.registerButtons}>
+                  <div style={{ marginRight: "10px" }}>
+                    <ColorButton
+                      variant="contained"
+                      color="primary"
+                      onClick={toggleLoginDialog}
+                    >
+                      Create Recipe
+                    </ColorButton>
+                  </div>
+                  <ColorButton
+                    variant="contained"
+                    color="primary"
+                    onClick={toggleRegisterDialog}
+                  >
+                    My recipes
+                  </ColorButton>
+                </RegisterButtons>
+              ) : (
                 <RegisterButtons className={classes.registerButtons}>
                   <div style={{ marginRight: "10px" }}>
                     <ColorButton

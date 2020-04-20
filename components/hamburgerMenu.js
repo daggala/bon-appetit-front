@@ -93,13 +93,6 @@ const HamburgerMenu = ({
           >
             <p>Register</p>
           </StyledMenuItem>
-          <StyledMenuItem
-            onClick={() => {
-              console.log("not yet implemented");
-            }}
-          >
-            <p>Search</p>
-          </StyledMenuItem>
         </div>
       )}
     </Menu>

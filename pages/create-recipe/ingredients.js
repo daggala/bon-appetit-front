@@ -176,18 +176,19 @@ const Ingredients = ({ dispatch, ingredients, error, theme }) => {
       </Column>
       <Column>
         <IngredientsContainer>
-          {ingredients.map((ing) => {
-            return (
-              <StyledSVG
-                key={ing.number}
-                label={ing.ingredient}
-                onDelete={() =>
-                  dispatch({ type: "deleteIngredient", payload: ing.number })
-                }
-                className={classes.chip}
-              />
-            );
-          })}
+          {ingredients &&
+            ingredients.map((ing) => {
+              return (
+                <StyledSVG
+                  key={ing.number}
+                  label={ing.ingredient}
+                  onDelete={() =>
+                    dispatch({ type: "deleteIngredient", payload: ing.number })
+                  }
+                  className={classes.chip}
+                />
+              );
+            })}
         </IngredientsContainer>
       </Column>
     </Container>
