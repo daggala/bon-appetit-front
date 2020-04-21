@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { fade, makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import MenuIcon from "@material-ui/icons/Menu";
@@ -170,9 +170,9 @@ const Banner = () => {
 
   const { user } = useContext(UserContext);
 
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [isLoginDialogOpen, toggleLoginDialog] = React.useState(false);
-  const [isRegisterDialogOpen, toggleRegisterDialog] = React.useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [isLoginDialogOpen, toggleLoginDialog] = useState(false);
+  const [isRegisterDialogOpen, toggleRegisterDialog] = useState(false);
 
   const isMenuOpen = Boolean(anchorEl);
 
@@ -183,6 +183,9 @@ const Banner = () => {
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
+
+  console.log("isRegisterDialogOpen ", isRegisterDialogOpen);
+  console.log("isLoginDialogOpen ", isLoginDialogOpen);
 
   return (
     <>
@@ -213,33 +216,26 @@ const Banner = () => {
             </div> */}
 
             {isLoginDialogOpen ? (
-              <Login onClickOutside={toggleLoginDialog} />
+              <Login
+                onClickOutside={toggleLoginDialog}
+                openRegisterForm={() => {
+                  toggleLoginDialog(false);
+                  toggleRegisterDialog(true);
+                }}
+              />
             ) : null}
             {isRegisterDialogOpen ? (
-              <Register onClickOutside={toggleRegisterDialog} />
+              <Register
+                onClickOutside={toggleRegisterDialog}
+                openLoginForm={() => {
+                  toggleRegisterDialog(false);
+                  toggleLoginDialog(true);
+                }}
+              />
             ) : null}
 
             <div style={{ display: "flex", flexDirection: "row" }}>
-              {user ? (
-                <RegisterButtons className={classes.registerButtons}>
-                  <div style={{ marginRight: "10px" }}>
-                    <ColorButton
-                      variant="contained"
-                      color="primary"
-                      onClick={toggleLoginDialog}
-                    >
-                      Create Recipe
-                    </ColorButton>
-                  </div>
-                  <ColorButton
-                    variant="contained"
-                    color="primary"
-                    onClick={toggleRegisterDialog}
-                  >
-                    My recipes
-                  </ColorButton>
-                </RegisterButtons>
-              ) : (
+              {user ? null : (
                 <RegisterButtons className={classes.registerButtons}>
                   <div style={{ marginRight: "10px" }}>
                     <ColorButton

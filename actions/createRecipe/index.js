@@ -5,7 +5,6 @@ export const createRecipe = (recipe, ingredients, image) => {
   if (token) {
     headers.Authorization = `Bearer ${token}`;
   }
-  console.log("recipe ", recipe, "ingredients ", ingredients, "image ", image);
 
   const data = new FormData();
   data.append("title", recipe.title);
@@ -21,13 +20,11 @@ export const createRecipe = (recipe, ingredients, image) => {
 
   function handleErrors(response) {
     if (!response.ok) {
-      console.log("response ", response);
       throw new Error(response.msg);
     }
     return response;
   }
 
-  console.log("data ", data);
   return fetch("http://localhost:3003/recipe", {
     method: "POST", // *GET, POST, PUT, DELETE, etc.
     mode: "cors", // no-cors, cors, *same-origin
@@ -41,7 +38,6 @@ export const createRecipe = (recipe, ingredients, image) => {
       return handleErrors(resp);
     })
     .then((resp) => {
-      console.log("resp ", resp);
       return resp;
     });
 };

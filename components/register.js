@@ -1,32 +1,33 @@
-import React, { useReducer, useState, useContext } from 'react';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import isValidEmail from '../utils/isValidEmail';
+import React, { useReducer, useState, useContext } from "react";
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import isValidEmail from "../utils/isValidEmail";
 
-const Register = ({ onClickOutside }) => {
+const Register = ({ onClickOutside, openLoginForm }) => {
   function reducer(state, action) {
     switch (action.type) {
-      case 'firstName':
+      case "firstName":
         return { ...state, firstName: action.payload };
-      case 'lastName':
+      case "lastName":
         return { ...state, lastName: action.payload };
-      case 'email':
+      case "email":
         return { ...state, email: action.payload };
-      case 'firstPassword':
+      case "firstPassword":
         return { ...state, firstPassword: action.payload };
-      case 'secondPassword':
+      case "secondPassword":
         return { ...state, secondPassword: action.payload };
-      case 'error':
+      case "error":
         return { ...state, error: action.payload, emailError: null };
-      case 'emailError':
+      case "emailError":
         return { ...state, emailError: action.payload, error: null };
-      case 'lastNameError':
+      case "lastNameError":
         return { ...state, lastNameError: action.payload, error: null };
-      case 'firstNameError':
+      case "firstNameError":
         return { ...state, firstNameError: action.payload, error: null };
       default:
         throw new Error();
@@ -42,7 +43,7 @@ const Register = ({ onClickOutside }) => {
     lastNameError: null,
     firstNameError: null,
     firstName: null,
-    lastName: null
+    lastName: null,
   };
   const [formValues, dispatch] = useReducer(reducer, initialValues);
 
@@ -52,21 +53,21 @@ const Register = ({ onClickOutside }) => {
     setOpen(false);
     onClickOutside(false);
   };
-  const onSubmit = event => {
+  const onSubmit = (event) => {
     if (formValues.firstPassword !== formValues.secondPassword) {
       dispatch({
-        type: 'error',
-        payload: 'The passwords are not the same, try again'
+        type: "error",
+        payload: "The passwords are not the same, try again",
       });
       return;
     } else if (!isValidEmail(formValues.email)) {
-      dispatch({ type: 'emailError', payload: 'Email not valid' });
+      dispatch({ type: "emailError", payload: "Email not valid" });
       return;
     } else if (!formValues.firstName) {
-      dispatch({ type: 'firstNameError', payload: 'First name missing' });
+      dispatch({ type: "firstNameError", payload: "First name missing" });
       return;
     } else if (!formValues.lastName) {
-      dispatch({ type: 'lastNameError', payload: 'Last name missing' });
+      dispatch({ type: "lastNameError", payload: "Last name missing" });
       return;
     }
     event.preventDefault();
@@ -75,11 +76,11 @@ const Register = ({ onClickOutside }) => {
       firstName: formValues.firstName,
       lastName: formValues.lastName,
       email: formValues.email,
-      password: formValues.firstPassword
+      password: formValues.firstPassword,
     };
 
     const headers = {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json",
     };
 
     function handleErrors(response) {
@@ -89,16 +90,15 @@ const Register = ({ onClickOutside }) => {
       return response;
     }
 
-    fetch('http://localhost:3003/user', {
-      method: 'POST', // *GET, POST, PUT, DELETE, etc.
-      mode: 'cors', // no-cors, cors, *same-origin
+    fetch("http://localhost:3003/user", {
+      method: "POST", // *GET, POST, PUT, DELETE, etc.
+      mode: "cors", // no-cors, cors, *same-origin
       body: JSON.stringify(data),
-      headers: headers
+      headers: headers,
     })
-      .then(response => response)
-      .then(response => response.json())
-      .then(resp => {
-        console.log('resp ', resp);
+      .then((response) => response)
+      .then((response) => response.json())
+      .then((resp) => {
         if (!resp.success) {
           throw new Error(resp.msg);
         }
@@ -106,8 +106,8 @@ const Register = ({ onClickOutside }) => {
       .then(() => {
         handleClose();
       })
-      .catch(error => {
-        dispatch({ type: 'error', payload: error.message });
+      .catch((error) => {
+        dispatch({ type: "error", payload: error.message });
       });
   };
 
@@ -120,7 +120,11 @@ const Register = ({ onClickOutside }) => {
       >
         <DialogTitle id="form-dialog-title">Register</DialogTitle>
         <DialogContent>
-          <p style={{ color: 'red' }}>{formValues.error}</p>
+          <DialogContentText>
+            Already registered? Click <b onClick={openLoginForm}>here</b> to
+            login
+          </DialogContentText>
+          <p style={{ color: "red" }}>{formValues.error}</p>
 
           <form onSubmit={onSubmit}>
             <TextField
@@ -131,10 +135,10 @@ const Register = ({ onClickOutside }) => {
               required
               error={formValues.firstNameError ? true : false}
               helperText={formValues.firstNameError}
-              onChange={e =>
+              onChange={(e) =>
                 dispatch({
-                  type: 'firstName',
-                  payload: e.target.value
+                  type: "firstName",
+                  payload: e.target.value,
                 })
               }
             />
@@ -146,10 +150,10 @@ const Register = ({ onClickOutside }) => {
               required
               error={formValues.lastNameError ? true : false}
               helperText={formValues.lastNameError}
-              onChange={e =>
+              onChange={(e) =>
                 dispatch({
-                  type: 'lastName',
-                  payload: e.target.value
+                  type: "lastName",
+                  payload: e.target.value,
                 })
               }
             />
@@ -163,10 +167,10 @@ const Register = ({ onClickOutside }) => {
               required
               error={formValues.emailError}
               helperText={formValues.emailError}
-              onChange={event => {
+              onChange={(event) => {
                 dispatch({
-                  type: 'email',
-                  payload: event.target.value
+                  type: "email",
+                  payload: event.target.value,
                 });
               }}
             />
@@ -178,8 +182,8 @@ const Register = ({ onClickOutside }) => {
               type="password"
               fullWidth
               required
-              onChange={e =>
-                dispatch({ type: 'firstPassword', payload: e.target.value })
+              onChange={(e) =>
+                dispatch({ type: "firstPassword", payload: e.target.value })
               }
             />
             <TextField
@@ -190,10 +194,10 @@ const Register = ({ onClickOutside }) => {
               type="password"
               fullWidth
               required
-              onChange={event => {
+              onChange={(event) => {
                 dispatch({
-                  type: 'secondPassword',
-                  payload: event.target.value
+                  type: "secondPassword",
+                  payload: event.target.value,
                 });
               }}
             />

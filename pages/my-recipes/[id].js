@@ -14,16 +14,19 @@ const Container = styled.div`
 `;
 
 const Title = styled.h1`
-  margin: 0px 15px 30px 15px;
+  margin: 0px 15px 5px 15px;
   text-align: center;
 `;
 
-function MyRecipes({ recipes }) {
+function MyRecipes() {
   const { user } = useContext(UserContext);
   return (
     <Container>
       <Title>Recipes I've pinned or created</Title>
-      <Recipes url={`http://localhost:3003/recipe/myrecipes/${user.id}`} />
+      <Recipes
+        url={`http://localhost:3003/recipe/myrecipes/${user.id}`}
+        myRecipes
+      />
     </Container>
   );
 }

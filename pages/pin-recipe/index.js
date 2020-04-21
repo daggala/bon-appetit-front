@@ -69,7 +69,6 @@ const CreateRecipe = () => {
       return;
     }
     createRecipe(data, null, image).then(() => {
-      console.log("then");
       Router.push("/");
     });
   }

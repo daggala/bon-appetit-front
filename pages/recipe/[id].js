@@ -5,6 +5,7 @@ import PersonIcon from "@material-ui/icons/Person";
 import moment from "moment";
 import fetch from "isomorphic-unfetch";
 import { menuHeight, breakpoints } from "../../shared/variables";
+import Router from "next/router";
 
 const Container = styled.div`
   display: grid;
@@ -77,6 +78,13 @@ const Url = styled.a`
   text-decoration: none;
 `;
 
+const Back = styled.div`
+  &:hover {
+    font-weight: 600;
+    cursor: pointer;
+  }
+`;
+
 const Recipe = ({ recipe, author }) => {
   // set the desired language
   moment.locale("en");
@@ -88,6 +96,7 @@ const Recipe = ({ recipe, author }) => {
 
   return (
     <Container>
+      <Back onClick={() => Router.back()}>{"◄  BACK TO RECIPES"}</Back>
       <Title>{recipe.title}</Title>
 
       <p style={{ margin: "0" }}>
