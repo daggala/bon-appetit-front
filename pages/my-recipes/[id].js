@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Recipes from "../../components/recipes";
 import { UserContext } from "../../utils/context";
 import { breakpoints, menuHeight } from "../../shared/variables";
+import { API_ROOT } from "../../api-config";
 
 const Container = styled.div`
   margin-left: 15px;
@@ -23,10 +24,7 @@ function MyRecipes() {
   return (
     <Container>
       <Title>Recipes I've pinned or created</Title>
-      <Recipes
-        url={`http://localhost:3003/recipe/myrecipes/${user.id}`}
-        myRecipes
-      />
+      <Recipes url={`${API_ROOT}/recipe/myrecipes/${user.id}`} myRecipes />
     </Container>
   );
 }

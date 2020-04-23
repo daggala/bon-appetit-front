@@ -7,6 +7,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import isValidEmail from "../utils/isValidEmail";
+import { API_ROOT } from "../api-config";
 
 const Register = ({ onClickOutside, openLoginForm }) => {
   function reducer(state, action) {
@@ -90,7 +91,7 @@ const Register = ({ onClickOutside, openLoginForm }) => {
       return response;
     }
 
-    fetch("http://localhost:3003/user", {
+    fetch(`${API_ROOT}/user`, {
       method: "POST", // *GET, POST, PUT, DELETE, etc.
       mode: "cors", // no-cors, cors, *same-origin
       body: JSON.stringify(data),

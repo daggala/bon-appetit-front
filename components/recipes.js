@@ -4,8 +4,6 @@ import Card from "./card.js";
 import { Masonry } from "gestalt";
 import { usePaginatedFetch } from "../actions/usePaginatedFetch";
 import useViewport from "../shared/hooks/useViewport.js";
-import Link from "next/link";
-import Button from "@material-ui/core/Button";
 import { UserContext } from "../utils/context";
 import Login from "./login.js";
 import Register from "./register.js";
@@ -41,68 +39,69 @@ const Recipes = ({ url, myRecipes = false }) => {
   const [isLoginDialogOpen, toggleLoginDialog] = useState(false);
   const [isRegisterDialogOpen, toggleRegisterDialog] = useState(false);
 
-  console.log("user ", user);
   //can also add isFetching like so: const [{ data, isFetching }
   const [{ data }, fetchItems] = usePaginatedFetch(url);
 
   const domValue = createRef();
   const { width } = useViewport();
   return (
-    <Container ref={domValue}>
-      {isLoginDialogOpen ? (
-        <Login
-          message="You have to be logged to be able to create recipes or view your recipes"
-          onClickOutside={toggleLoginDialog}
-          openRegisterForm={() => {
-            toggleLoginDialog(false);
-            toggleRegisterDialog(true);
-          }}
-        />
-      ) : null}
-      {isRegisterDialogOpen ? (
-        <Register
-          onClickOutside={toggleRegisterDialog}
-          openLoginForm={() => {
-            toggleRegisterDialog(false);
-            toggleLoginDialog(true);
-          }}
-        />
-      ) : null}
+    <>
+      <Container ref={domValue}>
+        {isLoginDialogOpen ? (
+          <Login
+            message="You have to be logged to be able to create recipes or view your recipes"
+            onClickOutside={toggleLoginDialog}
+            openRegisterForm={() => {
+              toggleLoginDialog(false);
+              toggleRegisterDialog(true);
+            }}
+          />
+        ) : null}
+        {isRegisterDialogOpen ? (
+          <Register
+            onClickOutside={toggleRegisterDialog}
+            openLoginForm={() => {
+              toggleRegisterDialog(false);
+              toggleLoginDialog(true);
+            }}
+          />
+        ) : null}
 
-      <ButtonContainer>
-        <div style={{ marginRight: "10px" }}>
-          <ClickableWrapper
-            type={user ? "link" : "button"}
-            url="/create-recipe"
-            onClick={toggleLoginDialog}
-          >
-            Create Recipe
-          </ClickableWrapper>
-        </div>
-        {myRecipes ? null : (
-          <ClickableWrapper
-            type={user ? "link" : "button"}
-            url={{ pathname: "/my-recipes/[id]" }}
-            as={user ? `/my-recipes/${user.id}` : null}
-            onClick={toggleLoginDialog}
-          >
-            My recipes
-          </ClickableWrapper>
+        <ButtonContainer>
+          <div style={{ marginRight: "10px" }}>
+            <ClickableWrapper
+              type={user ? "link" : "button"}
+              url="/create-recipe"
+              onClick={toggleLoginDialog}
+            >
+              Create Recipe
+            </ClickableWrapper>
+          </div>
+          {myRecipes ? null : (
+            <ClickableWrapper
+              type={user ? "link" : "button"}
+              url={{ pathname: "/my-recipes/[id]" }}
+              as={user ? `/my-recipes/${user.id}` : null}
+              onClick={toggleLoginDialog}
+            >
+              My recipes
+            </ClickableWrapper>
+          )}
+        </ButtonContainer>
+        {width > 515 ? (
+          <Masonry
+            comp={Card}
+            items={data.items}
+            scrollContainer={() => domValue.current}
+            loadItems={fetchItems}
+            minCols={1}
+            virtualize
+          />
+        ) : (
+          <CardList data={data.items} />
         )}
-      </ButtonContainer>
-      {width > 515 ? (
-        <Masonry
-          comp={Card}
-          items={data.items}
-          scrollContainer={() => domValue.current}
-          loadItems={fetchItems}
-          minCols={1}
-          virtualize
-        />
-      ) : (
-        <CardList data={data.items} />
-      )}
-    </Container>
+      </Container>
+    </>
   );
 };
 

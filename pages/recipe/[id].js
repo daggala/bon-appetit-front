@@ -6,6 +6,7 @@ import moment from "moment";
 import fetch from "isomorphic-unfetch";
 import { menuHeight, breakpoints } from "../../shared/variables";
 import Router from "next/router";
+import { API_ROOT } from "../../api-config";
 
 const Container = styled.div`
   display: grid;
@@ -190,10 +191,16 @@ const Recipe = ({ recipe, author }) => {
 };
 
 Recipe.getInitialProps = async function ({ query }) {
-  const res = await fetch(`http://localhost:3003/recipe/oneRecipe/${query.id}`);
+  const res = await fetch(`${API_ROOT}/recipe/oneRecipe/${query.id}`);
   const data = await res.json();
 
-  const res2 = await fetch(`http://localhost:3003/user/${data.authorId}`);
+  const headers = {
+    "Content-Type": "application/json",
+  };
+
+  const res2 = await fetch(`${API_ROOT}/user/${data.authorId}`, {
+    headers: headers,
+  });
 
   const data2 = await res2.json();
 

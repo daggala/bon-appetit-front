@@ -184,9 +184,6 @@ const Banner = () => {
     setAnchorEl(null);
   };
 
-  console.log("isRegisterDialogOpen ", isRegisterDialogOpen);
-  console.log("isLoginDialogOpen ", isLoginDialogOpen);
-
   return (
     <>
       <CssBaseline />

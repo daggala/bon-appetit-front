@@ -1,4 +1,6 @@
-export const createRecipe = (recipe, ingredients, image) => {
+import { API_ROOT } from "../../api-config";
+
+export const createRecipe = (recipe, ingredients, image, authorId) => {
   const headers = {};
 
   const token = sessionStorage.getItem("token");
@@ -11,7 +13,7 @@ export const createRecipe = (recipe, ingredients, image) => {
   recipe.portions ? data.append("servings", recipe.portions) : null;
   recipe.cookTime ? data.append("cookTime", recipe.cookTime) : null;
   recipe.prepTime ? data.append("prepTime", recipe.prepTime) : null;
-
+  data.append("authorId", authorId);
   data.append("instructions", recipe.instructions);
   recipe.link ? data.append("url", recipe.link) : null;
   ingredients ? data.append("ingredients", JSON.stringify(ingredients)) : null;
@@ -25,7 +27,7 @@ export const createRecipe = (recipe, ingredients, image) => {
     return response;
   }
 
-  return fetch("http://localhost:3003/recipe", {
+  return fetch(`${API_ROOT}/recipe`, {
     method: "POST", // *GET, POST, PUT, DELETE, etc.
     mode: "cors", // no-cors, cors, *same-origin
     body: data,

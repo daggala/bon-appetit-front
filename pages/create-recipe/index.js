@@ -1,4 +1,4 @@
-import React, { useReducer, useState, useEffect } from "react";
+import React, { useReducer, useContext, useState, useEffect } from "react";
 import styled, { withTheme } from "styled-components";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
@@ -12,6 +12,7 @@ import { menuHeight, breakpoints } from "../../shared/variables";
 import AccessTimeIcon from "@material-ui/icons/AccessTime";
 import "./style.css";
 import Router from "next/router";
+import { UserContext } from "../../utils/context";
 
 const PhotoContainer = styled.div`
   display: flex;
@@ -132,6 +133,8 @@ const Multiline = styled.textarea`
 const CreateRecipe = ({ theme }) => {
   const { control, handleSubmit, register, errors } = useForm();
 
+  const { user } = useContext(UserContext);
+
   const reducer = (state, action) => {
     switch (action.type) {
       case "deleteIngredient":
@@ -194,7 +197,7 @@ const CreateRecipe = ({ theme }) => {
     } else {
       setImageError(false);
     }
-    createRecipe(data, ingredients, image).then(() => {
+    createRecipe(data, ingredients, image, user.id).then(() => {
       Router.push("/");
     });
   };

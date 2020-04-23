@@ -2,6 +2,7 @@ import React from "react";
 import Recipes from "../components/recipes";
 import styled from "styled-components";
 import { breakpoints } from "../shared/variables";
+import { API_ROOT } from "../api-config";
 
 const Container = styled.div`
   height: 100vh;
@@ -12,9 +13,11 @@ const Container = styled.div`
 `;
 
 const Home = () => {
+  console.log("env ", process.env.NODE_ENV);
+  console.log("API_ROOT ", API_ROOT);
   return (
     <Container>
-      <Recipes url="http://localhost:3003/recipe" />
+      <Recipes url={`${API_ROOT}/recipe`} />
     </Container>
   );
 };
