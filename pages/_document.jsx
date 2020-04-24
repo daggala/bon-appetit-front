@@ -19,7 +19,7 @@ class MyDocument extends Document {
           <meta name="theme-color" content={theme.palette.primary.main} />
           <script
             src="https://kit.fontawesome.com/95f79459e6.js"
-            crossorigin="anonymous"
+            crossOrigin="anonymous"
           ></script>
           <link
             rel="stylesheet"

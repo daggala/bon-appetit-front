@@ -50,6 +50,10 @@ function MyApp({ Component, pageProps }) {
     });
   };
 
+  if (process.env.NODE_ENV === "production") {
+    console.log = function () {};
+  }
+
   return (
     <MUIThemeProvider theme={muiTheme}>
       <ThemeProvider theme={theme}>

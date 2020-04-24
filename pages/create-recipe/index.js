@@ -54,8 +54,6 @@ const Row = styled.div`
     justify-content: space-between;
   
   }
- 
-
 `;
 
 const PhotoRow = styled.div`
