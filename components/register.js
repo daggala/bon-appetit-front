@@ -8,6 +8,8 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import isValidEmail from "../utils/isValidEmail";
 import { API_ROOT } from "../api-config";
+import { login } from "../actions/login";
+import Router from "next/router";
 
 const Register = ({ onClickOutside, openLoginForm }) => {
   function reducer(state, action) {
@@ -48,12 +50,8 @@ const Register = ({ onClickOutside, openLoginForm }) => {
   };
   const [formValues, dispatch] = useReducer(reducer, initialValues);
 
-  const [open, setOpen] = React.useState(true);
+  const [isRegisterDialogOpen, setRegisterDialog] = React.useState(true);
 
-  const handleClose = () => {
-    setOpen(false);
-    onClickOutside(false);
-  };
   const onSubmit = (event) => {
     if (formValues.firstPassword !== formValues.secondPassword) {
       dispatch({
@@ -84,13 +82,6 @@ const Register = ({ onClickOutside, openLoginForm }) => {
       "Content-Type": "application/json",
     };
 
-    function handleErrors(response) {
-      if (!response.success) {
-        throw new Error(response.msg);
-      }
-      return response;
-    }
-
     fetch(`${API_ROOT}/user`, {
       method: "POST", // *GET, POST, PUT, DELETE, etc.
       mode: "cors", // no-cors, cors, *same-origin
@@ -99,13 +90,11 @@ const Register = ({ onClickOutside, openLoginForm }) => {
     })
       .then((response) => response)
       .then((response) => response.json())
-      .then((resp) => {
-        if (!resp.success) {
-          throw new Error(resp.msg);
-        }
-      })
       .then(() => {
-        handleClose();
+        setRegisterDialog(false);
+        login({ email: data.email, password: data.password }).then(() => {
+          Router.replace("/");
+        });
       })
       .catch((error) => {
         dispatch({ type: "error", payload: error.message });
@@ -114,105 +103,127 @@ const Register = ({ onClickOutside, openLoginForm }) => {
 
   return (
     <div>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="form-dialog-title"
-      >
-        <DialogTitle id="form-dialog-title">Register</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Already registered? Click <b onClick={openLoginForm}>here</b> to
-            login
+      {!isRegisterDialogOpen ? (
+        <Dialog
+          open={!isRegisterDialogOpen}
+          onClose={() => onClickOutside(false)}
+        >
+          <DialogTitle id="form-dialog-title">
+            You have successfully registered!
+          </DialogTitle>
+          <DialogContentText
+            style={{ marginLeft: "25px", marginRight: "25px" }}
+          >
+            You've got mail! Go to your email inbox and click on the link in
+            your mail to activate your account
           </DialogContentText>
-          <p style={{ color: "red" }}>{formValues.error}</p>
+          <DialogActions>
+            <Button onClick={() => onClickOutside(false)} color="primary">
+              Continue to website
+            </Button>
+          </DialogActions>
+        </Dialog>
+      ) : (
+        <Dialog
+          open={open}
+          onClose={() => onClickOutside(false)}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogTitle id="form-dialog-title">Register</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Already registered? Click <b onClick={openLoginForm}>here</b> to
+              login
+            </DialogContentText>
+            <p style={{ color: "red" }}>{formValues.error}</p>
 
-          <form onSubmit={onSubmit}>
-            <TextField
-              autoFocus
-              margin="dense"
-              label="First Name"
-              fullWidth
-              required
-              error={formValues.firstNameError ? true : false}
-              helperText={formValues.firstNameError}
-              onChange={(e) =>
-                dispatch({
-                  type: "firstName",
-                  payload: e.target.value,
-                })
-              }
-            />
-            <TextField
-              autoFocus
-              margin="dense"
-              label="Last Name"
-              fullWidth
-              required
-              error={formValues.lastNameError ? true : false}
-              helperText={formValues.lastNameError}
-              onChange={(e) =>
-                dispatch({
-                  type: "lastName",
-                  payload: e.target.value,
-                })
-              }
-            />
-            <TextField
-              autoFocus
-              margin="dense"
-              id="name"
-              label="Email Address"
-              type="email"
-              fullWidth
-              required
-              error={formValues.emailError}
-              helperText={formValues.emailError}
-              onChange={(event) => {
-                dispatch({
-                  type: "email",
-                  payload: event.target.value,
-                });
-              }}
-            />
-            <TextField
-              autoFocus
-              margin="dense"
-              id="name"
-              label="Password"
-              type="password"
-              fullWidth
-              required
-              onChange={(e) =>
-                dispatch({ type: "firstPassword", payload: e.target.value })
-              }
-            />
-            <TextField
-              autoFocus
-              margin="dense"
-              id="name"
-              label="Password again"
-              type="password"
-              fullWidth
-              required
-              onChange={(event) => {
-                dispatch({
-                  type: "secondPassword",
-                  payload: event.target.value,
-                });
-              }}
-            />
-          </form>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={onSubmit} color="primary">
-            Register
-          </Button>
-        </DialogActions>
-      </Dialog>
+            <form onSubmit={onSubmit}>
+              <TextField
+                autoFocus
+                margin="dense"
+                label="First Name"
+                fullWidth
+                required
+                error={formValues.firstNameError ? true : false}
+                helperText={formValues.firstNameError}
+                onChange={(e) =>
+                  dispatch({
+                    type: "firstName",
+                    payload: e.target.value,
+                  })
+                }
+              />
+              <TextField
+                autoFocus
+                margin="dense"
+                label="Last Name"
+                fullWidth
+                required
+                error={formValues.lastNameError ? true : false}
+                helperText={formValues.lastNameError}
+                onChange={(e) =>
+                  dispatch({
+                    type: "lastName",
+                    payload: e.target.value,
+                  })
+                }
+              />
+              <TextField
+                autoFocus
+                margin="dense"
+                id="name"
+                label="Email Address"
+                type="email"
+                fullWidth
+                required
+                error={formValues.emailError}
+                helperText={formValues.emailError}
+                onChange={(event) => {
+                  dispatch({
+                    type: "email",
+                    payload: event.target.value,
+                  });
+                }}
+              />
+              <TextField
+                autoFocus
+                margin="dense"
+                id="name"
+                label="Password"
+                type="password"
+                fullWidth
+                required
+                onChange={(e) =>
+                  dispatch({ type: "firstPassword", payload: e.target.value })
+                }
+              />
+              <TextField
+                autoFocus
+                margin="dense"
+                id="name"
+                label="Password again"
+                type="password"
+                fullWidth
+                required
+                onChange={(event) => {
+                  dispatch({
+                    type: "secondPassword",
+                    payload: event.target.value,
+                  });
+                }}
+              />
+            </form>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => onClickOutside(false)} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={onSubmit} color="primary">
+              Register
+            </Button>
+          </DialogActions>
+        </Dialog>
+      )}
     </div>
   );
 };

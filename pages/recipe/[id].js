@@ -62,6 +62,7 @@ const Photo = styled.img`
 const DescriptionText = styled.p`
   margin: 0;
   line-height: 2em;
+  white-space: pre-line;
 `;
 
 const IngredientText = styled.p`
@@ -87,6 +88,7 @@ const Back = styled.div`
 `;
 
 const Recipe = ({ recipe, author }) => {
+  console.log("recipe ", recipe);
   // set the desired language
   moment.locale("en");
 

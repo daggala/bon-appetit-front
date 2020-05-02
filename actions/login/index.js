@@ -14,6 +14,8 @@ export const login = ({ email, password }) => {
     token: token,
   };
 
+  console.log("data ", data);
+
   function handleErrors(response) {
     if (!response.ok) {
       throw new Error("Email or password are wrong");
@@ -34,6 +36,7 @@ export const login = ({ email, password }) => {
       return response.json();
     })
     .then((response) => {
+      console.log("response ", response);
       sessionStorage.setItem("token", response.token);
       sessionStorage.setItem("user", JSON.stringify(response.user));
       return response;
