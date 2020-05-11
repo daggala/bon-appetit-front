@@ -8,91 +8,7 @@ import { menuHeight, breakpoints } from "../../shared/variables";
 import Router from "next/router";
 import { API_ROOT } from "../../api-config";
 
-const Container = styled.div`
-  display: grid;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin: ${menuHeight.phone + 30}px 15px 50px 15px;
-
-  @media (min-width: ${breakpoints.sm}px) {
-    margin: ${menuHeight.phone + 30}px 30px 50px 30px;
-  }
-  @media (min-width: ${breakpoints.md}px) {
-    margin: ${menuHeight.desktop + 30}px 50px 50px 50px;
-  }
-`;
-
-const Row = styled.div`
-  display: flex;
-  flex-direction: row;
-`;
-
-const RecipeRow = styled(Row)`
-  display: flex;
-  flex-direction: column;
-  margin-top: 10px;
-  margin-bottom: 15px;
-  @media (min-width: ${breakpoints.sm}px) {
-    flex-direction: row;
-  }
-`;
-
-const Column = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-const RecipeColumn = styled(Column)`
-  max-width: 750px;
-  margin-top: 30px;
-`;
-
-const SideBar = styled.div`
-  display: inline-flex;
-  flex-direction: column;
-  margin-right: 80px;
-`;
-
-const Photo = styled.img`
-  max-width: 100%;
-  object-fit: cover;
-`;
-
-const DescriptionText = styled.p`
-  margin: 0;
-  line-height: 2em;
-  white-space: pre-line;
-`;
-
-const IngredientText = styled.p`
-  margin: 0px 0px 10px 0px;
-`;
-
-const Title = styled.h1``;
-
-const H3 = styled.h3`
-  margin: 25px 0px 20px 0px;
-`;
-
-const Url = styled.a`
-  color: black;
-  text-decoration: none;
-`;
-
-const Back = styled.div`
-  &:hover {
-    font-weight: 600;
-    cursor: pointer;
-  }
-`;
-
 const Recipe = ({ recipe, author }) => {
-  console.log("recipe ", recipe);
-  // set the desired language
-  moment.locale("en");
-
-  // use one of the localized format strings
   var date = moment(recipe.createdAt).format("LL");
 
   const ingredients = recipe.ingredients || null;
@@ -193,22 +109,95 @@ const Recipe = ({ recipe, author }) => {
 };
 
 Recipe.getInitialProps = async function ({ query }) {
-  const res = await fetch(`${API_ROOT}/recipe/oneRecipe/${query.id}`);
-  const data = await res.json();
+  const recipeRes = await fetch(`${API_ROOT}/recipe/oneRecipe/${query.id}`);
+  const recipe = await recipeRes.json();
 
-  const headers = {
-    "Content-Type": "application/json",
-  };
+  const userRes = await fetch(`${API_ROOT}/user/${recipe.authorId}`);
 
-  const res2 = await fetch(`${API_ROOT}/user/${data.authorId}`, {
-    headers: headers,
-  });
-
-  const data2 = await res2.json();
+  const user = await userRes.json();
 
   return {
-    recipe: data,
-    author: data2.user,
+    recipe: recipe,
+    author: user.user,
   };
 };
 export default Recipe;
+
+const Container = styled.div`
+  display: grid;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: ${menuHeight.phone + 30}px 15px 50px 15px;
+
+  @media (min-width: ${breakpoints.sm}px) {
+    margin: ${menuHeight.phone + 30}px 30px 50px 30px;
+  }
+  @media (min-width: ${breakpoints.md}px) {
+    margin: ${menuHeight.desktop + 30}px 50px 50px 50px;
+  }
+`;
+
+const Row = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+
+const RecipeRow = styled(Row)`
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+  margin-bottom: 15px;
+  @media (min-width: ${breakpoints.sm}px) {
+    flex-direction: row;
+  }
+`;
+
+const Column = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const RecipeColumn = styled(Column)`
+  max-width: 750px;
+  margin-top: 30px;
+`;
+
+const SideBar = styled.div`
+  display: inline-flex;
+  flex-direction: column;
+  margin-right: 80px;
+`;
+
+const Photo = styled.img`
+  max-width: 100%;
+  object-fit: cover;
+`;
+
+const DescriptionText = styled.p`
+  margin: 0;
+  line-height: 2em;
+  white-space: pre-line;
+`;
+
+const IngredientText = styled.p`
+  margin: 0px 0px 10px 0px;
+`;
+
+const Title = styled.h1``;
+
+const H3 = styled.h3`
+  margin: 25px 0px 20px 0px;
+`;
+
+const Url = styled.a`
+  color: black;
+  text-decoration: none;
+`;
+
+const Back = styled.div`
+  &:hover {
+    font-weight: 600;
+    cursor: pointer;
+  }
+`;

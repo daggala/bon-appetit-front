@@ -1,9 +1,9 @@
-import React from "react";
+import { useState, useEffect } from "react";
 
 const useViewport = () => {
-  const [width, setWidth] = React.useState();
+  const [width, setWidth] = useState();
 
-  React.useEffect(() => {
+  useEffect(() => {
     setWidth(window.innerWidth);
     const handleWindowResize = () => setWidth(window.innerWidth);
     window.addEventListener("resize", handleWindowResize);

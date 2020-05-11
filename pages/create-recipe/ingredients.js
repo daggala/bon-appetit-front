@@ -1,32 +1,117 @@
 import React, { useState } from "react";
-import styled, { withTheme } from "styled-components";
-import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
-import AddCircleIcon from "@material-ui/icons/AddCircle";
-import Chip from "@material-ui/core/Chip";
+import styled from "styled-components";
+
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
-import { withStyles } from "@material-ui/core/styles";
-import { menuHeight, breakpoints } from "../../shared/variables";
+import { breakpoints } from "../../shared/variables";
+import Ingredient from "./ingredient";
+import AddRoundButton from "./addRoundButton";
 
-const StyledSVG = withStyles((theme) => ({
+const Ingredients = ({ ingredients, addItem, removeItem, error }) => {
+  const classes = useStyles();
+
+  const [inputValue, setInputValue] = useState("");
+
+  function handleChange(event) {
+    event.preventDefault();
+    return setInputValue(event.target.value);
+  }
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (e.target.value) {
+        addItem(e.target.value);
+        setInputValue("");
+      }
+    }
+  };
+
+  return (
+    <Container>
+      <Column>
+        <Title>Ingredients</Title>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            maxWidth: "460px",
+          }}
+        >
+          <TextField
+            style={{ width: "460px" }}
+            id="outlined-basic"
+            label="Add ingredient"
+            value={inputValue}
+            onChange={handleChange}
+            variant="outlined"
+            onKeyDown={handleKeyDown}
+            fullWidth
+            error={error}
+            helperText={
+              error ? "You should enter at least one ingredient" : null
+            }
+          />
+
+          <div
+            style={{
+              marginTop: "15px",
+              marginBottom: "15px",
+              marginLeft: "10px",
+            }}
+          >
+            <AddRoundButton
+              value={inputValue}
+              onClick={() => {
+                addItem(inputValue);
+                setInputValue("");
+              }}
+            />
+          </div>
+        </div>
+      </Column>
+      <Column>
+        <IngredientsContainer>
+          {ingredients &&
+            ingredients.map((ingredient, index) => {
+              return (
+                <Ingredient
+                  key={index}
+                  label={ingredient}
+                  onDelete={() => removeItem(index)}
+                  className={classes.chip}
+                />
+              );
+            })}
+        </IngredientsContainer>
+      </Column>
+    </Container>
+  );
+};
+
+export default Ingredients;
+
+const useStyles = makeStyles((theme) => ({
   root: {
-    backgroundColor: "white",
-    borderColor: theme.palette.primary.main,
-    borderWidth: "1px",
-    borderStyle: "solid",
-    margin: "5px",
-    "&:hover": {
-      borderColor: theme.palette.primary.dark,
-
-      "& .MuiSvgIcon-root , & .MuiChip-deleteIcon": {
-        color: theme.palette.primary.dark,
-      },
-    },
-    "& .MuiSvgIcon-root , & .MuiChip-deleteIcon": {
-      color: theme.palette.primary.main,
+    display: "flex",
+    justifyContent: "center",
+    flexWrap: "wrap",
+    "& > *": {
+      margin: theme.spacing(0.5),
     },
   },
-}))(Chip);
+  chip: {
+    width: "min-content",
+    marginLeft: "7px",
+    marginTop: "7px",
+  },
+}));
+
+const Title = styled.h3`
+  color: ${({ theme }) => theme.textColor};
+  margin-left: 7px;
+  margin-top: 0px;
+`;
 
 const Container = styled.div`
   display: flex;
@@ -36,12 +121,6 @@ const Container = styled.div`
   @media (min-width: ${breakpoints.md}px) {
     flex-direction: row;
   }
-`;
-
-const AddButton = styled.button`
-  background-color: transparent;
-  border: none;
-  padding: none;
 `;
 
 const IngredientsContainer = styled.div`
@@ -60,139 +139,3 @@ const Column = styled.div`
   display: flex;
   flex-direction: column;
 `;
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-    justifyContent: "center",
-    flexWrap: "wrap",
-    "& > *": {
-      margin: theme.spacing(0.5),
-    },
-  },
-  chip: {
-    width: "min-content",
-    marginLeft: "7px",
-    marginTop: "7px",
-  },
-  add: {
-    fontSize: 40,
-  },
-}));
-
-const Ingredients = ({ dispatch, ingredients, error, theme }) => {
-  const classes = useStyles();
-
-  const [tempIngredient, setTempIngredient] = useState("");
-  const [isButtonHovered, setButtonHover] = useState(false);
-
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      if (e.target.value) {
-        dispatch({
-          type: "addIngredient",
-          payload: e.target.value,
-        });
-        setTempIngredient("");
-      }
-    }
-  };
-
-  return (
-    <Container>
-      <Column>
-        <h3
-          style={{
-            color: theme.textColor,
-            marginLeft: "7px",
-            marginTop: "0px",
-          }}
-        >
-          Ingredients
-        </h3>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            maxWidth: "460px",
-          }}
-        >
-          <TextField
-            style={{ width: "460px" }}
-            id="outlined-basic"
-            label="Add ingredient"
-            value={tempIngredient}
-            onChange={(e) => {
-              e.preventDefault();
-              return setTempIngredient(e.target.value);
-            }}
-            variant="outlined"
-            onKeyDown={handleKeyDown}
-            fullWidth
-            error={error}
-            helperText={
-              error ? "You should enter at least one ingredient" : null
-            }
-          />
-
-          <div
-            style={{
-              marginTop: "15px",
-              marginBottom: "15px",
-              marginLeft: "10px",
-            }}
-          >
-            <AddButton
-              type="button"
-              onClick={() => {
-                dispatch({
-                  type: "addIngredient",
-                  payload: tempIngredient,
-                });
-                setTempIngredient("");
-              }}
-              disabled={!tempIngredient}
-            >
-              {isButtonHovered ? (
-                <AddCircleIcon
-                  className={classes.add}
-                  style={{ fontSize: 40, color: theme.colors[2] }}
-                  onMouseEnter={() => setButtonHover(true)}
-                  onMouseLeave={() => setButtonHover(false)}
-                />
-              ) : (
-                <AddCircleOutlineIcon
-                  className={classes.add}
-                  style={{ fontSize: 40, color: theme.colors[2] }}
-                  onMouseEnter={() => setButtonHover(true)}
-                  onMouseLeave={() => setButtonHover(false)}
-                />
-              )}
-            </AddButton>
-          </div>
-        </div>
-      </Column>
-      <Column>
-        <IngredientsContainer>
-          {ingredients &&
-            ingredients.map((ing) => {
-              return (
-                <StyledSVG
-                  key={ing.number}
-                  label={ing.ingredient}
-                  onDelete={() =>
-                    dispatch({ type: "deleteIngredient", payload: ing.number })
-                  }
-                  className={classes.chip}
-                />
-              );
-            })}
-        </IngredientsContainer>
-      </Column>
-    </Container>
-  );
-};
-
-export default withTheme(Ingredients);

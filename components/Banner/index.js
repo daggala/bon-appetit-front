@@ -3,85 +3,148 @@ import { fade, makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import MenuIcon from "@material-ui/icons/Menu";
 import Link from "next/link";
-import { UserContext } from "../utils/context";
-import Login from "./login.js";
-import Register from "./register.js";
-import ColorButton from "./buttons/colorButton";
+import { UserContext } from "../../utils/context";
+import LoginForm from "../LoginForm";
+import Register from "../RegisterForm";
+import ColorButton from "../Buttons/colorButton";
 import styled from "styled-components";
-import SearchIcon from "@material-ui/icons/Search";
-import InputBase from "@material-ui/core/InputBase";
-import HamburgerMenu from "./hamburgerMenu";
+// import SearchIcon from "@material-ui/icons/Search";
+// import InputBase from "@material-ui/core/InputBase";
+import HamburgerMenu from "../HamburgerMenu";
 import Slide from "@material-ui/core/Slide";
 import useScrollTrigger from "@material-ui/core/useScrollTrigger";
 import PropTypes from "prop-types";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import AppBar from "@material-ui/core/AppBar";
-import { breakpoints, menuHeight } from "../shared/variables";
-const HomeLink = styled.div`
-  cursor: pointer;
-`;
+import { breakpoints, menuHeight } from "../../shared/variables";
 
-const MenuBar = styled.div`
-  display: flex;
-  height: ${menuHeight.phone}px;
-  justify-content: space-between;
-  @media (min-width: ${breakpoints.md}px) {
-    height: ${menuHeight.desktop}px;
-  }
-`;
+function HideOnScroll(props) {
+  const { children } = props;
+  const trigger = useScrollTrigger();
 
-const RegisterButtons = styled.div`
-  display: flex;
-  margin-right: 20px;
-  margin-top: 35px;
-`;
+  return (
+    <Slide appear={false} direction="down" in={!trigger}>
+      {children}
+    </Slide>
+  );
+}
 
-const Logo = styled.img`
-  width: 170px;
-  margin-left: 25px;
-  margin-top: 20px;
+HideOnScroll.propTypes = {
+  children: PropTypes.element.isRequired,
+};
 
-  @media (min-width: ${breakpoints.md}px) {
-    width: 220px;
-  }
-`;
+const Banner = () => {
+  const classes = useStyles();
 
-const HamburgerButton = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #005c4c;
-  border-radius: 5px;
-  &:hover {
-    background-color: #007c4c;
-  }
+  const { user } = useContext(UserContext);
 
-  @media (min-width: ${breakpoints.xs}px) {
-    margin-right: 10px;
-    margin-top: 15px;
-    width: 55px;
-    height: 55px;
-    svg {
-      height: 1.4em;
-      width: 1.4em;
-    }
-  }
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [isLoginDialogOpen, toggleLoginDialog] = useState(false);
+  const [isRegisterDialogOpen, toggleRegisterDialog] = useState(false);
 
-  @media (min-width: ${breakpoints.sm}px) {
-    margin-right: 25px;
-    width: 40px;
-    height: 40px;
-    margin-top: 26px;
-    svg {
-      height: 1em;
-      width: 14em;
-    }
-  }
-  @media (min-width: ${breakpoints.md}px) {
-    display: ${(props) => (props.user ? "flex" : "none")};
-    margin-top: 37px;
-  }
-`;
+  const isMenuOpen = Boolean(anchorEl);
+
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  return (
+    <>
+      <CssBaseline />
+      <HideOnScroll threshold={650}>
+        <AppBar className={classes.appBar}>
+          <MenuBar>
+            <HomeLink>
+              <Typography className={classes.title} variant="h6" noWrap>
+                <Link href="/">
+                  <Logo src="/../static/logo.png" />
+                </Link>
+              </Typography>
+            </HomeLink>
+            {/* TODO: Search bar that will be implemented later when it's been implemented in the backend}
+            {/* <div className={classes.search}>
+              <div className={classes.searchIcon}>
+                <SearchIcon />
+              </div>
+              <InputBase
+                placeholder="Search…"
+                classes={{
+                  root: classes.inputRoot,
+                  input: classes.inputInput,
+                }}
+                inputProps={{ "aria-label": "search" }}
+              />
+            </div> */}
+
+            {isLoginDialogOpen ? (
+              <LoginForm
+                onClickOutside={toggleLoginDialog}
+                openRegisterForm={() => {
+                  toggleLoginDialog(false);
+                  toggleRegisterDialog(true);
+                }}
+              />
+            ) : null}
+            {isRegisterDialogOpen ? (
+              <Register
+                onClickOutside={toggleRegisterDialog}
+                openLoginForm={() => {
+                  toggleRegisterDialog(false);
+                  toggleLoginDialog(true);
+                }}
+              />
+            ) : null}
+
+            <div style={{ display: "flex", flexDirection: "row" }}>
+              {user ? null : (
+                <RegisterButtons className={classes.registerButtons}>
+                  <div style={{ marginRight: "10px" }}>
+                    <ColorButton
+                      variant="contained"
+                      color="primary"
+                      onClick={toggleLoginDialog}
+                    >
+                      Login
+                    </ColorButton>
+                  </div>
+                  <ColorButton
+                    variant="contained"
+                    color="primary"
+                    onClick={toggleRegisterDialog}
+                  >
+                    Register
+                  </ColorButton>
+                </RegisterButtons>
+              )}
+
+              <HamburgerButton
+                aria-label="open drawer"
+                onClick={handleMenuOpen}
+                user={user}
+              >
+                <MenuIcon fontSize="large" />
+              </HamburgerButton>
+            </div>
+            <HamburgerMenu
+              anchorEl={anchorEl}
+              isMenuOpen={isMenuOpen}
+              handleMenuClose={handleMenuClose}
+              user={user}
+              openLoginDialog={toggleLoginDialog}
+              openRegisterDialog={toggleRegisterDialog}
+            />
+          </MenuBar>
+        </AppBar>
+      </HideOnScroll>
+    </>
+  );
+};
+
+export default Banner;
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -150,130 +213,68 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function HideOnScroll(props) {
-  const { children } = props;
-  const trigger = useScrollTrigger();
+const HomeLink = styled.div`
+  cursor: pointer;
+`;
 
-  return (
-    <Slide appear={false} direction="down" in={!trigger}>
-      {children}
-    </Slide>
-  );
-}
+const MenuBar = styled.div`
+  display: flex;
+  height: ${menuHeight.phone}px;
+  justify-content: space-between;
+  @media (min-width: ${breakpoints.md}px) {
+    height: ${menuHeight.desktop}px;
+  }
+`;
 
-HideOnScroll.propTypes = {
-  children: PropTypes.element.isRequired,
-};
+const RegisterButtons = styled.div`
+  display: flex;
+  margin-right: 20px;
+  margin-top: 35px;
+`;
 
-const Banner = () => {
-  const classes = useStyles();
+const Logo = styled.img`
+  width: 170px;
+  margin-left: 25px;
+  margin-top: 20px;
 
-  const { user } = useContext(UserContext);
+  @media (min-width: ${breakpoints.md}px) {
+    width: 220px;
+  }
+`;
 
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [isLoginDialogOpen, toggleLoginDialog] = useState(false);
-  const [isRegisterDialogOpen, toggleRegisterDialog] = useState(false);
+const HamburgerButton = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #005c4c;
+  border-radius: 5px;
+  &:hover {
+    background-color: #007c4c;
+  }
 
-  const isMenuOpen = Boolean(anchorEl);
+  @media (min-width: ${breakpoints.xs}px) {
+    margin-right: 10px;
+    margin-top: 15px;
+    width: 55px;
+    height: 55px;
+    svg {
+      height: 1.4em;
+      width: 1.4em;
+    }
+  }
 
-  const handleProfileMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
-
-  return (
-    <>
-      <CssBaseline />
-      <HideOnScroll threshold={650}>
-        <AppBar className={classes.appBar}>
-          <MenuBar>
-            <HomeLink>
-              <Typography className={classes.title} variant="h6" noWrap>
-                <Link href="/">
-                  <Logo src="/../static/logo.png" />
-                </Link>
-              </Typography>
-            </HomeLink>
-
-            {/* <div className={classes.search}>
-              <div className={classes.searchIcon}>
-                <SearchIcon />
-              </div>
-              <InputBase
-                placeholder="Search…"
-                classes={{
-                  root: classes.inputRoot,
-                  input: classes.inputInput,
-                }}
-                inputProps={{ "aria-label": "search" }}
-              />
-            </div> */}
-
-            {isLoginDialogOpen ? (
-              <Login
-                onClickOutside={toggleLoginDialog}
-                openRegisterForm={() => {
-                  toggleLoginDialog(false);
-                  toggleRegisterDialog(true);
-                }}
-              />
-            ) : null}
-            {isRegisterDialogOpen ? (
-              <Register
-                onClickOutside={toggleRegisterDialog}
-                openLoginForm={() => {
-                  toggleRegisterDialog(false);
-                  toggleLoginDialog(true);
-                }}
-              />
-            ) : null}
-
-            <div style={{ display: "flex", flexDirection: "row" }}>
-              {user ? null : (
-                <RegisterButtons className={classes.registerButtons}>
-                  <div style={{ marginRight: "10px" }}>
-                    <ColorButton
-                      variant="contained"
-                      color="primary"
-                      onClick={toggleLoginDialog}
-                    >
-                      Login
-                    </ColorButton>
-                  </div>
-                  <ColorButton
-                    variant="contained"
-                    color="primary"
-                    onClick={toggleRegisterDialog}
-                  >
-                    Register
-                  </ColorButton>
-                </RegisterButtons>
-              )}
-
-              <HamburgerButton
-                aria-label="open drawer"
-                onClick={handleProfileMenuOpen}
-                user={user}
-              >
-                <MenuIcon fontSize="large" />
-              </HamburgerButton>
-            </div>
-            <HamburgerMenu
-              anchorEl={anchorEl}
-              isMenuOpen={isMenuOpen}
-              handleMenuClose={handleMenuClose}
-              user={user}
-              openLoginDialog={toggleLoginDialog}
-              openRegisterDialog={toggleRegisterDialog}
-            />
-          </MenuBar>
-        </AppBar>
-      </HideOnScroll>
-    </>
-  );
-};
-
-export default Banner;
+  @media (min-width: ${breakpoints.sm}px) {
+    margin-right: 25px;
+    width: 40px;
+    height: 40px;
+    margin-top: 26px;
+    svg {
+      height: 1em;
+      width: 14em;
+    }
+  }
+  @media (min-width: ${breakpoints.md}px) {
+    display: ${(props) => (props.user ? "flex" : "none")};
+    margin-top: 37px;
+  }
+`;

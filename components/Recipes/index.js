@@ -1,28 +1,13 @@
 import React, { useContext, useState, createRef } from "react";
 import styled from "styled-components";
-import Card from "./card.js";
+import Card from "../Card";
 import { Masonry } from "gestalt";
-import { usePaginatedFetch } from "../actions/usePaginatedFetch";
-import useViewport from "../shared/hooks/useViewport.js";
-import { UserContext } from "../utils/context";
-import Login from "./login.js";
-import Register from "./register.js";
-import ClickableWrapper from "./buttons/clickableWrapper";
-
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  margin-bottom: 30px;
-`;
-
-const ButtonContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-self: center;
-  margin-bottom: 30px;
-  margin-top: 10px;
-`;
+import { usePaginatedFetch } from "../../hooks/usePaginatedFetch";
+import useViewport from "../../hooks/useViewport";
+import { UserContext } from "../../utils/context";
+import LoginForm from "../LoginForm";
+import Register from "../RegisterForm";
+import ClickableWrapper from "../Buttons/clickableWrapper";
 
 function CardList({ data }) {
   return (
@@ -39,16 +24,16 @@ const Recipes = ({ url, myRecipes = false }) => {
   const [isLoginDialogOpen, toggleLoginDialog] = useState(false);
   const [isRegisterDialogOpen, toggleRegisterDialog] = useState(false);
 
-  //can also add isFetching like so: const [{ data, isFetching }
   const [{ data }, fetchItems] = usePaginatedFetch(url);
 
+  console.log("data ", data);
   const domValue = createRef();
   const { width } = useViewport();
   return (
     <>
       <Container ref={domValue}>
         {isLoginDialogOpen ? (
-          <Login
+          <LoginForm
             message="You have to be logged to be able to create recipes or view your recipes"
             onClickOutside={toggleLoginDialog}
             openRegisterForm={() => {
@@ -106,3 +91,18 @@ const Recipes = ({ url, myRecipes = false }) => {
 };
 
 export default Recipes;
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-bottom: 30px;
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-self: center;
+  margin-bottom: 30px;
+  margin-top: 10px;
+`;

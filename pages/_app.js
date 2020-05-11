@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { UserContext } from "../utils/context.js";
-import Banner from "../components/banner";
-import { login } from "../actions/login";
+import Banner from "../components/Banner";
+import { login } from "../services/login";
 import { isJsonString } from "../utils/isJsonString";
 import Router from "next/router";
 import { ThemeProvider } from "styled-components";
@@ -9,25 +9,12 @@ import {
   createMuiTheme,
   ThemeProvider as MUIThemeProvider,
 } from "@material-ui/core/styles";
+import theme from "../styles/theme.js";
 
 function MyApp({ Component, pageProps }) {
   const [user, setUser] = useState({});
 
-  const theme = {
-    colors: ["#b2d8d8", "#66b2b2", "#008080", "#006666", "#004c4c", "#003c3c"],
-    textColor: "#383838",
-  };
-
-  const muiTheme = createMuiTheme({
-    palette: {
-      primary: {
-        light: theme.colors[1],
-        main: theme.colors[2],
-        dark: theme.colors[4],
-        darker: theme.colors[5],
-      },
-    },
-  });
+  const muiTheme = createMuiTheme(theme);
 
   useEffect(() => {
     //Check every time app loads, on every page if the user is logged in
